@@ -1,0 +1,40 @@
+name: Fetch EOD Stock Prices for TradePulse
+
+on:
+  schedule:
+    # Runs Mon-Fri at 4:05 PM IST (10:35 UTC)
+    - cron: "35 10 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-eod-prices:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --quiet yfinance
+
+      - name: Fetch NSE EOD prices & daily OHLC
+        run: python scripts/fetch_eod.py
+
+      - name: Commit & push eod_prices.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/eod_prices.json
+          if git diff --staged --quiet; then
+            echo "No price changes."
+          else
+            git commit -m "chore: update EOD prices ($(date -u +'%Y-%m-%d'))"
+            git push
+          fi
