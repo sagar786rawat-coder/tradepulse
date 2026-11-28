@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-27 16:55 IST",
+  "updatedAt": "2026-11-28 10:09 IST",
   "count": 7,
   "prices": {
     "CUPID": {
@@ -2535,10 +2535,10 @@
     "SYMBIOTEC": {
       "symbol": "SYMBIOTEC",
       "exchange": "NSE",
-      "ltp": 1514.0,
-      "prevClose": 1522.1,
-      "changePct": -0.53,
-      "asOf": "2026-11-27",
+      "ltp": 1522.1,
+      "prevClose": 1558.5,
+      "changePct": -2.34,
+      "asOf": "2026-11-26",
       "ohlc": [
         {
           "time": 1788201000000,
@@ -3003,24 +3003,16 @@
           "high": 1560.3,
           "low": 1495.7,
           "close": 1522.1
-        },
-        {
-          "time": 1795717800000,
-          "date": "2026-11-27",
-          "open": 1525.0,
-          "high": 1578.5,
-          "low": 1510.0,
-          "close": 1514.0
         }
       ]
     },
     "TFCILTD": {
       "symbol": "TFCILTD",
       "exchange": "NSE",
-      "ltp": 173.97,
-      "prevClose": 174.94,
-      "changePct": -0.55,
-      "asOf": "2026-11-27",
+      "ltp": 174.94,
+      "prevClose": 173.66,
+      "changePct": 0.74,
+      "asOf": "2026-11-26",
       "ohlc": [
         {
           "time": 1787769000000,
@@ -3509,14 +3501,6 @@
           "high": 175.0,
           "low": 173.06,
           "close": 174.94
-        },
-        {
-          "time": 1795717800000,
-          "date": "2026-11-27",
-          "open": 174.5,
-          "high": 175.0,
-          "low": 171.25,
-          "close": 173.97
         }
       ]
     }
