@@ -1,820 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
-        window.__firebase_config = firebaseConfig;
-        window.__initial_auth_token = initialAuthToken;
-        window.__app_id = appId;
-            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIxNjc5MzQ2NzY3MTA1MzUzOTg0MiIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjX2EwMTFhM2EzZmVhZTg3ZjhfdHJhZGluZy1qb3VybmFsLmh0bWwtNjYzIn0sImV4cCI6MTc5NTM1NzM0MiwiaWF0IjoxNzk1MzUzNzQyLCJhbGciOiJSUzI1NiJ9.YXcn4SijO5sdKFm0DroKXq9ctVU1tjARBUe1JsnBUezBCxo8IhfLHfKIguhDGeDd-Nbimog3dZEE_kWw3IerFIDjD29wh7ygCmB5-FuVo0oMtSVUD9w09BjcKJc_fdgS4fa4F7LBNWyxNaRuetjO9ktBds1EmCinO-97zoPXq-ZIMUqY309p5Y6qX4SNukZBcu1juXkImW3sIGk3_RiC1B6UFuYAGA-MVK28gohHyEElfRaMgLEEs4sOT_F0BxLEWO8_o3GwKaWGyjKk3drTAIFstiFKugRdolXRwOefEx4qPuQ2KKsBowJ44Sp9Y88-GA3N12kkPBw1e2iIloGG2Q","c_a011a3a3feae87f8_trading-journal.html-663")</script><script data-bard-client-injected="true">
-  document.addEventListener('input', (event) => {
-    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
-      const clonedDoc = document.cloneNode(true);
-      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
-      injectedScripts.forEach(el => el.remove());
-      window.parent.postMessage({
-        type: 'inlineEdit',
-        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
-      }, '*');
-    }
-  });
-</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const SCROLL_KEYS = new Set([
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
-  ]);
-  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
-
-  function isTextEntryTarget(target) {
-    if (!target) return false;
-    const tagName = target.tagName;
-    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
-        tagName === 'SELECT' || target.isContentEditable === true;
-  }
-
-  // An element absorbs the key only if it both overflows on the axis being
-  // scrolled and is configured to scroll on that axis. The cheap dimension
-  // test runs first because getComputedStyle forces a style recalc, and this
-  // runs on every keypress. Each axis is read from its own longhand: the
-  // 'overflow' shorthand serializes as two values when the axes differ, which
-  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
-  function canScroll(node, horizontal) {
-    const overflows = horizontal ? node.scrollWidth > node.clientWidth
-                                 : node.scrollHeight > node.clientHeight;
-    if (!overflows) return false;
-    const style = window.getComputedStyle(node);
-    const overflow = horizontal ? style.overflowX : style.overflowY;
-    return overflow === 'auto' || overflow === 'scroll';
-  }
-
-  // Walks up from the event target so nested scrollers keep their behavior.
-  // <body> is included because pages that pin the root height make it the
-  // scroll container.
-  function hasScrollableAncestor(target, horizontal) {
-    let node = target;
-    while (node && node !== document.documentElement) {
-      if (canScroll(node, horizontal)) return true;
-      node = node.parentElement;
-    }
-    return false;
-  }
-
-  function rootCanScroll(horizontal) {
-    const scroller = document.scrollingElement || document.documentElement;
-    if (!scroller) return false;
-    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
-    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
-                      : scroller.scrollHeight > window.innerHeight + 1;
-  }
-
-  window.addEventListener('keydown', function(event) {
-    if (!SCROLL_KEYS.has(event.key)) return;
-    if (event.defaultPrevented) return;
-    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
-    // reserved for shortcuts, so none of them are scroll intent.
-    if (event.altKey || event.metaKey || event.ctrlKey) return;
-
-    const target = event.target;
-    if (isTextEntryTarget(target)) return;
-
-    // Anything that can still absorb the scroll gets to keep it.
-    const horizontal = HORIZONTAL_KEYS.has(event.key);
-    if (rootCanScroll(horizontal)) return;
-    if (hasScrollableAncestor(target, horizontal)) return;
-
-    event.preventDefault();
-  }, {capture: true, passive: false});
-})();</script><script data-bard-client-injected="true">(function() {
-  // Ensure this script is executed only once
-  if (window.firebaseAuthBridgeScriptLoaded) {
-    return;
-  }
-  window.firebaseAuthBridgeScriptLoaded = true;
-
-  let nextTokenPromiseId = 0;
-
-  // Stores { resolve, reject } for ongoing token requests
-  const pendingTokenPromises = {};
-
-  // Listen for messages from the Host Application
-  window.addEventListener('message', function(event) {
-
-    const messageData = event.data;
-
-  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
-      const { success, token, error, promiseId } = messageData ?? {};
-      if (pendingTokenPromises[promiseId]) {
-        if (success) {
-          pendingTokenPromises[promiseId].resolve(token);
-        } else {
-          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
-        }
-        delete pendingTokenPromises[promiseId];
-      }
-    }
-  });
-
-  // Expose a function for the Generated App to request a new Firebase token
-  window.requestNewFirebaseToken = function() {
-    const currentPromiseId = nextTokenPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingTokenPromises[currentPromiseId] = { resolve, reject };
-    });
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'REQUEST_NEW_FIREBASE_TOKEN',
-        promiseId: currentPromiseId
-      }, '*');
-    } else {
-      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
-      delete pendingTokenPromises[currentPromiseId];
-    }
-    return promise;
-  };
-})();</script><script data-bard-client-injected="true">
-let realOriginalGetUserMedia = null;
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-}
-
-(function() {
-  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
-    try {
-      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
-        get: function() {
-          return undefined; // Or throw an error
-        },
-        configurable: false
-      });
-    } catch (error) {
-      console.error("Error defining prototype getter:", error);
-    }
-  }
-})();
-
-(function() {
-  const pendingMediaResolvers = {};
-  let nextMediaPromiseId = 0;
-
-  function requestMediaPermissions(constraints) {
-    const mediaPromiseId = nextMediaPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingMediaResolvers[mediaPromiseId] = (granted) => {
-        delete pendingMediaResolvers[mediaPromiseId];
-        resolve(granted);
-      };
-    });
-
-    window.parent.postMessage({
-      type: 'requestMediaPermission',
-      constraints: constraints,
-      promiseId: mediaPromiseId,
-    }, '*');
-
-    return promise;
-  }
-
-  let originalGetUserMedia = realOriginalGetUserMedia;
-
-  function interceptGetUserMedia() {
-    if (navigator.mediaDevices) {
-      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
-        value: function(constraints) {
-          return requestMediaPermissions(constraints).then((granted) => {
-            if (granted) {
-              if (originalGetUserMedia) {
-                return originalGetUserMedia(constraints);
-              } else {
-                throw new Error("Original getUserMedia not available.");
-              }
-            } else {
-              throw new DOMException('Permission denied', 'NotAllowedError');
-            }
-          });
-        },
-        writable: false,
-        configurable: false
-      });
-    }
-  }
-
-  interceptGetUserMedia();
-
-  const observer = new MutationObserver(function(mutationsList, observer) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'childList' && mutation.addedNodes) {
-        mutation.addedNodes.forEach(node => {
-          if (node === navigator.mediaDevices) {
-            interceptGetUserMedia();
-          }
-        });
-      }
-    }
-  });
-
-  function interceptSpeechRecognition() {
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      return;
-    }
-
-    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    const SpeechRecognitionWrapper = function(...args) {
-      const recognizer = new OriginalSpeechRecognition(...args);
-      const originalStart = recognizer.start.bind(recognizer);
-
-      recognizer.start = function() {
-        requestMediaPermissions({ audio: true }).then(granted => {
-          if (granted) {
-            originalStart();
-          } else {
-            const errorEvent = new SpeechRecognitionErrorEvent('error');
-            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
-            recognizer.dispatchEvent(errorEvent);
-          }
-        });
-      };
-
-      return recognizer;
-    };
-
-    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
-    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
-
-    if (window.SpeechRecognition) {
-      window.SpeechRecognition = SpeechRecognitionWrapper;
-    }
-    if (window.webkitSpeechRecognition) {
-      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
-    }
-  }
-
-  interceptSpeechRecognition();
-
-  window.addEventListener('message', function(event) {
-    if (event.data) {
-      if (event.data.type === 'resolveMediaPermission') {
-        const { promiseId, granted } = event.data;
-        if (pendingMediaResolvers[promiseId]) {
-          pendingMediaResolvers[promiseId](granted);
-        }
-      }
-    }
-  });
-
-})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
-function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
-
- Copyright The Closure Library Authors.
- SPDX-License-Identifier: Apache-2.0
-*/
-function A(b,d){function e(){}e.prototype=d.prototype;b.i=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
-let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
-null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.extensions="";var l=0,t=null,r=null,q=[],F=new TextEncoder,
-G=new TextDecoder;c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*
-16|0;return(f==="x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;
-(g=t)==null||g.postMessage(a)}};Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
-(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
-url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
-</script><script data-bard-client-injected="true">((function(modelInformation) {
-  const originalFetch = window.fetch;
-  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
-  let googleLlmBaseApiUrls = [
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
-  ];
-  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-    );
-  });
-  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-
-  const pendingFetchResolvers = {};
-  let nextPromiseId = 0;
-
-  function handleStringInput(input, optionsArgument) {
-    const actualUrl = input;
-    const fetchCallArgs = [actualUrl, optionsArgument];
-    const effectiveOptions = optionsArgument || {};
-    const bodyForApiKeyCheck = effectiveOptions.body;
-    const bodyForPostMessage = effectiveOptions.body;
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  function handleRequestInput(input, optionsArgument) {
-    const actualUrl = input.url;
-    const fetchCallArgs = [input, optionsArgument];
-    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (optionsArgument) {
-      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
-      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
-      if ('body' in optionsArgument) {
-        bodyForApiKeyCheck = optionsArgument.body;
-        bodyForPostMessage = optionsArgument.body;
-      } else {
-        bodyForApiKeyCheck = undefined;
-        bodyForPostMessage = input.body;
-      }
-    } else {
-      bodyForApiKeyCheck = undefined;
-      bodyForPostMessage = input.body;
-    }
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  window.fetch = function(input, optionsArgument) {
-    let actualUrl;
-    let fetchCallArgs;
-    let effectiveOptions = {};
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (typeof input === 'string') {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
-    } else if (input instanceof Request) {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
-    } else {
-      return originalFetch.apply(window, [input, optionsArgument]);
-    }
-
-    effectiveOptions.method = effectiveOptions.method || 'GET';
-    if (!effectiveOptions.headers) {
-      effectiveOptions.headers = new Headers();
-    }
-
-
-    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
-      let apiKeyIsNull = true;
-
-      const regex = new RegExp("models/([^:]+)");
-      const modelNameMatch = actualUrl.match(regex);
-      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
-
-
-      try {
-        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
-        const apiKeyParam = urlObject.searchParams.get('key');
-        if (apiKeyParam) {
-          apiKeyIsNull = false;
-        }
-      } catch (e) {
-        // Continue checks even if URL parsing fails
-      }
-
-      if (apiKeyIsNull && effectiveOptions.headers) {
-        const h = new Headers(effectiveOptions.headers);
-        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
-        if (apiKeyHeaderValue) {
-          apiKeyIsNull = false;
-          return originalFetch.apply(window, fetchCallArgs);
-        }
-      }
-
-      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
-        try {
-          const bodyData = JSON.parse(bodyForApiKeyCheck);
-          if (bodyData && bodyData.apiKey) {
-            apiKeyIsNull = false;
-            return originalFetch.apply(window, fetchCallArgs);
-          }
-        } catch (e) {
-          // Ignore JSON parsing errors
-        }
-      }
-
-      if(apiKeyIsNull) {
-        const promiseId = nextPromiseId++;
-        const promise = new Promise((resolve) => {
-          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
-            delete pendingFetchResolvers[promiseId];
-            resolve(resolvedResponse);
-          };
-        });
-
-        let serializedBodyForPostMessage;
-        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
-            serializedBodyForPostMessage = bodyForPostMessage;
-        } else if (bodyForPostMessage instanceof ReadableStream) {
-            serializedBodyForPostMessage = null;
-        } else {
-            try {
-                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
-            } catch (e) {
-                serializedBodyForPostMessage = null;
-            }
-        }
-
-        const messageOptions = {
-            method: effectiveOptions.method,
-            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
-            body: serializedBodyForPostMessage
-        };
-
-        window.parent.postMessage({
-          type: 'requestFetch',
-          url: actualUrl,
-          modelName: modelName,
-          options: messageOptions,
-          promiseId: promiseId,
-        }, '*');
-
-        return promise;
-      }
-      return originalFetch.apply(window, fetchCallArgs);
-    }
-    return originalFetch.apply(window, fetchCallArgs);
-  };
-
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'resolveFetch') {
-      const { promiseId, response } = event.data;
-      if (pendingFetchResolvers[promiseId]) {
-        try {
-          const reconstructedResponse = new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: new Headers(response.headers),
-          });
-          pendingFetchResolvers[promiseId](reconstructedResponse);
-        } catch (error) {
-          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
-        }
-      }
-    }
-  });
-
-}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function() {
-  const OVERLAY_SELECTOR =
-    'dialog[open], [role="dialog"], [role="alertdialog"], [role="menu"], [role="listbox"], [role="combobox"]';
-
-  function isVisibleOverlay(element) {
-    if (element.closest('[hidden], [aria-hidden="true"], [inert]')) {
-      return false;
-    }
-    if (window.getComputedStyle(element).visibility === 'hidden') {
-      return false;
-    }
-    for (let cur = element; cur; cur = cur.parentElement) {
-      if (window.getComputedStyle(cur).display === 'none') {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function hasOpenOverlay() {
-    const candidates = document.querySelectorAll(OVERLAY_SELECTOR);
-    for (let i = 0; i < candidates.length; i++) {
-      if (isVisibleOverlay(candidates[i])) {
-        return true;
-      }
-    }
-    try {
-      if (document.querySelector('[popover]:popover-open')) {
-        return true;
-      }
-    } catch (e) {
-      // Ignore engines that do not support :popover-open.
-    }
-    return false;
-  }
-
-  function isNonEmptySearchInput(target) {
-    return (
-      Boolean(target) &&
-      target.tagName === 'INPUT' &&
-      typeof target.type === 'string' &&
-      target.type.toLowerCase() === 'search' &&
-      typeof target.value === 'string' &&
-      target.value.length > 0
-    );
-  }
-
-  function shouldIgnoreEscape(event) {
-    return (
-      event.key !== 'Escape' ||
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey ||
-      event.isComposing ||
-      event.repeat ||
-      event.keyCode === 229 ||
-      isNonEmptySearchInput(event.target)
-    );
-  }
-
-  let shouldIgnoreCaptureState = false;
-
-  window.addEventListener(
-    'keydown',
-    function(event) {
-      if (event.key === 'Escape') {
-        shouldIgnoreCaptureState =
-          hasOpenOverlay() || isNonEmptySearchInput(event.target);
-      }
-    },
-    {capture: true},
-  );
-
-  window.addEventListener('keydown', function(event) {
-    if (
-      shouldIgnoreEscape(event) ||
-      event.defaultPrevented ||
-      shouldIgnoreCaptureState
-    ) {
-      return;
-    }
-    const wasBlockedOnCapture = shouldIgnoreCaptureState;
-    queueMicrotask(function() {
-      if (event.defaultPrevented || wasBlockedOnCapture) {
-        return;
-      }
-      if (window.parent && window.parent !== window) {
-        window.parent.postMessage({'type': 'escapeKey'}, '*');
-      }
-    });
-  });
-})();</script><script data-bard-client-injected="true">(function() {
-  function normalizeSlug(str) {
-    try {
-      return str
-        .trim()
-        .toLowerCase()
-        .replace(/[^p{L}p{N}s_-]/gu, '')
-        .replace(/s+/g, '-');
-    } catch (e) {
-      return str
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9s_-]/g, '')
-        .replace(/s+/g, '-');
-    }
-  }
-
-  function findTargetElement(hash) {
-    if (!hash || hash === '#') {
-      return null;
-    }
-    const rawId = hash.startsWith('#') ? hash.slice(1) : hash;
-    let decodedId = rawId;
-    try {
-      decodedId = decodeURIComponent(rawId);
-    } catch (e) {
-      // Ignore URI malformed errors.
-    }
-
-    // 1. Direct ID match (raw and decoded).
-    let target = document.getElementById(rawId) || document.getElementById(decodedId);
-    if (target) {
-      return target;
-    }
-
-    // 2. Name attribute match (<a name="...">).
-    try {
-      if (typeof CSS !== 'undefined' && CSS.escape) {
-        target =
-          document.querySelector('[name="' + CSS.escape(rawId) + '"]') ||
-          document.querySelector('[name="' + CSS.escape(decodedId) + '"]');
-      } else {
-        const namedElements = document.getElementsByName(rawId);
-        if (namedElements && namedElements.length > 0) {
-          return namedElements[0];
-        }
-      }
-    } catch (e) {
-      // Ignore querySelector syntax errors.
-    }
-    if (target) {
-      return target;
-    }
-
-    // 3. Match heading text by slug (for Markdown TOCs where headings lack explicit IDs).
-    const targetSlug = normalizeSlug(decodedId);
-    if (targetSlug) {
-      for (const heading of document.querySelectorAll('h1, h2, h3, h4, h5, h6')) {
-        if (normalizeSlug(heading.textContent || '') === targetSlug) {
-          return heading;
-        }
-      }
-    }
-
-    return null;
-  }
-
-  document.addEventListener('click', function(event) {
-    const target = event.target;
-    const anchor = target && typeof target.closest === 'function' ? target.closest('a') : null;
-    if (!anchor) {
-      return;
-    }
-
-    const href = anchor.getAttribute('href');
-    if (
-      !href ||
-      href.trim().toLowerCase().startsWith('javascript:') ||
-      anchor.hasAttribute('download')
-    ) {
-      return;
-    }
-
-    // Check if the link is an in-page hash / anchor link.
-    if (href.startsWith('#')) {
-      event.preventDefault();
-      const targetElement = findTargetElement(href);
-      if (targetElement) {
-        targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
-      }
-      return;
-    }
-
-    // Check if the URL has the same origin/pathname but with a hash.
-    try {
-      const url = new URL(anchor.href, window.location.href);
-      if (
-        url.hash &&
-        url.origin === window.location.origin &&
-        url.pathname === window.location.pathname
-      ) {
-        event.preventDefault();
-        const targetElement = findTargetElement(url.hash);
-        if (targetElement) {
-          targetElement.scrollIntoView({behavior: 'smooth', block: 'start'});
-        }
-        return;
-      }
-    } catch (e) {
-      // Fall through if URL parsing fails.
-    }
-
-    // For all external or full navigation links, prevent iframe-level navigation
-    // (which breaks in AGSA WebView or sandboxed iframes) and ensure they open
-    // safely in a new tab/window.
-    if (anchor.target !== '_blank') {
-      event.preventDefault();
-      window.open(anchor.href, '_blank', 'noopener,noreferrer');
-    }
-  }, {capture: true});
-})();</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
-
-    /**
-   * Normalizes an error event or a promise rejection reason into a structured error object.
-   * @param {*} errorEventOrReason The error object or reason.
-   * @return {object} Structured error data { message, name, stack }.
-   */
-  function getErrorObject(errorEventOrReason) {
-    if (errorEventOrReason instanceof Error) {
-      return {
-        message: errorEventOrReason.message,
-        name: errorEventOrReason.name,
-        stack: errorEventOrReason.stack,
-      };
-    }
-    // Fallback for non-Error objects.
-    try {
-      return {
-        message: JSON.stringify(errorEventOrReason),
-        name: 'UnknownErrorType',
-        stack: null,
-      };
-    } catch (e) {
-      return {
-        message: String(errorEventOrReason),
-        name: 'UnknownErrorTypeNonStringifiable',
-        stack: null,
-      };
-    }
-  }
-
-  /**
-   * Converts an array of arguments (from log/error) into a single string.
-   * Handles Error objects specially to include their message and stack.
-   * @param {Array<*>} args - Arguments passed to console methods.
-   * @return {string} A string representation of the arguments.
-   */
-  function stringifyArgs(args) {
-    return args
-      .map((arg) => {
-        if (arg instanceof Error) {
-          const {message, stack} = arg;
-          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
-        }
-        if (typeof arg === 'object' && arg !== null) {
-          try {
-            return JSON.stringify(arg);
-          } catch (error) {
-            return '[Circular Object]';
-          }
-        } else {
-          return String(arg);
-        }
-      })
-      .join(' ');
-  }
-
-  console.log = function(...args) {
-    const logString = stringifyArgs(args);
-    window.parent.postMessage({ type: 'log', message: logString }, '*');
-    originalConsoleLog.apply(console, args);
-  };
-
-  console.error = function(...args) {
-    let errorData;
-    if (args.length > 0 && args[0] instanceof Error) {
-      const err = args[0];
-      // If the first arg is an Error, capture its details.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        ...getErrorObject(err),
-        rawArgsString: stringifyArgs(args.slice(1)),
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      // If not an Error object, treat all args as a general error message.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        message: stringifyArgs(args),
-        name: 'ConsoleLoggedError',
-        stack: null,
-        timestamp: new Date().toISOString(),
-      };
-    }
-    window.parent.postMessage(errorData, '*');
-    originalConsoleError.apply(console, args);
-  };
-
-  // Listen for global unhandled synchronous errors.
-  window.addEventListener('error', function(event) {
-    const errorDetails = event.error ? getErrorObject(event.error) : {
-      message: event.message,
-      name: 'GlobalError',
-      stack: null,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    };
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'global',
-      ...errorDetails,
-      message: errorDetails.message || event.message,
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-  // Listen for unhandled promise rejections (asynchronous errors).
-  window.addEventListener('unhandledrejection', function(event) {
-    const errorDetails = getErrorObject(event.reason);
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'unhandledrejection',
-      ...errorDetails,
-      message: errorDetails.message || 'Unhandled Promise Rejection',
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-})();</script>
+<html lang="en" class="dark"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TradePulse — Trading Tracker &amp; Execution Journal</title>
@@ -857,7 +42,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <h1 class="text-base sm:text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">TradePulse</h1>
             <span id="savedStatusBadge" class="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25">Stored: 2 Open · 4 Closed</span>
           </div>
-          <p class="text-[11px] text-slate-500 dark:text-slate-400">Running Trades · Daily BUY Charts · Post-Sell AI · Zerodha EOD</p>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400">Running Trades · Daily 10/20 EMA Charts · R-Trackers · Risk Sizer · Zerodha EOD</p>
         </div>
       </div>
 
@@ -889,6 +74,54 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
     <!-- 1. KPI CARDS -->
     <section id="kpiGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3"></section>
 
+    <!-- 1B. PORTFOLIO HEAT, CASH BUFFER & MARKET REGIME BAR (UPGRADE #1) -->
+    <section id="portfolioHeatBar" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 shadow-sm p-4 sm:p-5 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>Portfolio Heat, Cash Buffer &amp; Exposure Phase</span>
+            <span id="exposurePhaseBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">PHASE 1 · PILOT TEST</span>
+          </h2>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Live downside risk vs. 3% heat ceiling, cash cushion, and market regime filter</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Market Regime:</span>
+          <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 text-xs">
+            <button data-regime="green" type="button" class="regime-btn px-2.5 py-1 rounded-lg font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Green</button>
+            <button data-regime="yellow" type="button" class="regime-btn px-2.5 py-1 rounded-lg font-bold shadow-sm bg-amber-500 text-slate-950">Yellow</button>
+            <button data-regime="red" type="button" class="regime-btn px-2.5 py-1 rounded-lg font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">Red</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="portfolioHeatMetrics" class="grid grid-cols-1 md:grid-cols-3 gap-3.5"></div>
+      <div id="portfolioHeatAlert" class="hidden rounded-xl border px-3.5 py-2.5 text-xs font-semibold"></div>
+    </section>
+
+    <!-- 1C. ON-DASHBOARD AI PERFORMANCE COACH & EDGE LAB (UPGRADE #5) -->
+    <section id="aiCoachSection" class="rounded-2xl border border-violet-500/25 bg-white dark:bg-slate-900/70 shadow-sm overflow-hidden">
+      <div class="px-4 sm:px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-violet-500/[0.07] to-sky-500/[0.05] flex flex-wrap items-center justify-between gap-2.5">
+        <div class="flex flex-wrap items-center gap-2.5">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>AI Performance Coach &amp; Edge Lab</span>
+              <span id="aiCoachGradeBadge" class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/35">GRADE B · 72/100</span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Live discipline grade, expectancy, pre-10:30 leak tracker &amp; what-if edge recovery simulator</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="auditWeakestTradeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/30 text-rose-700 dark:text-rose-300 text-xs font-semibold">Audit Weakest Trade</button>
+          <button id="coachCopySummaryBtn" type="button" class="px-3 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold">Copy AI Summary</button>
+        </div>
+      </div>
+      <div class="p-4 sm:p-5 space-y-3.5">
+        <div id="aiCoachMetricsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+        <div id="aiCoachInsightsBox" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+      </div>
+    </section>
+
     <!-- 2. CURRENT RUNNING TRADES -->
     <section class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/70 shadow-sm overflow-hidden">
       <div class="px-4 sm:px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2.5">
@@ -897,12 +130,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Current Running Trades</span>
           </h2>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Open positions with daily BUY chart markers, live LTP tracking, and instant Post-Sell AI Diagnostics</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">R-multiple progress bars, 10 EMA trail badges, 1-click breakeven SL, and partial profit booking</p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <span id="eodSyncStatusText" class="hidden sm:inline-flex items-center px-2.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] font-mono text-slate-600 dark:text-slate-300">EOD: Setup GitHub</span>
           <button id="syncEodNowBtn" type="button" class="px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-700 dark:text-amber-300 text-xs font-semibold">Sync EOD Prices</button>
-          <span id="runningUnrealizedBadge" class="font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl border tabular-nums bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">Live Unrealized: +₹2,682.00</span>
+          <button id="mergeOpenLotsBtn" type="button" class="hidden px-3 py-1.5 rounded-xl bg-sky-600/15 hover:bg-sky-600/25 border border-sky-500/35 text-sky-700 dark:text-sky-300 text-xs font-semibold">Merge Duplicate Lots</button>
+          <span id="runningUnrealizedBadge" class="font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl border tabular-nums bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30">Live Unrealized: +₹2,905.00</span>
           <button id="openNewRunningTradeBtn" type="button" class="px-3 py-1.5 rounded-xl bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">+ Add Running Trade</button>
         </div>
       </div>
@@ -915,7 +149,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         <div class="flex flex-wrap items-center gap-2.5">
           <div>
             <h2 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Buy &amp; Sell Execution Chart</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400">Hover/tap candles to inspect OHLC, BUY/SELL timestamps, Stop-Loss &amp; Target levels</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Hover/tap candles to inspect OHLC, 10/20 EMA, BUY/SELL timestamps, Stop-Loss &amp; Target levels</p>
           </div>
           <span id="chartDataSourceBadge" class="px-2.5 py-1 rounded-lg text-[11px] font-mono font-semibold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/25">Daily Chart · Running</span>
         </div>
@@ -925,6 +159,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-0.5 border border-slate-200 dark:border-slate-700 text-xs">
             <button id="scopeSingleBtn" type="button" class="px-2.5 py-1 rounded-lg font-semibold bg-white dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm">Single Trade</button>
             <button id="scopeTickerBtn" type="button" class="px-2.5 py-1 rounded-lg font-semibold text-slate-500 dark:text-slate-400">All Ticker</button>
+          </div>
+          <div class="inline-flex items-center gap-1">
+            <button id="toggleEma10Btn" type="button" class="px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition bg-cyan-500/15 border-cyan-500/40 text-cyan-700 dark:text-cyan-300">10 EMA</button>
+            <button id="toggleEma20Btn" type="button" class="px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition bg-fuchsia-500/15 border-fuchsia-500/40 text-fuchsia-700 dark:text-fuchsia-300">20 EMA</button>
           </div>
           <button id="openOhlcModalBtn" type="button" class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-xs font-semibold">Real OHLC CSV</button>
         </div>
@@ -1049,13 +287,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
     </section>
   </main>
 
-  <!-- MODAL 1: ADD / EDIT / CLOSE TRADE -->
+  <!-- MODAL 1: ADD / EDIT / CLOSE TRADE (WITH UPGRADE #3 RISK SIZER & GUARDS) -->
   <div id="tradeModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm">
     <div class="w-full max-w-2xl max-h-[92vh] rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-2xl flex flex-col overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
         <div>
           <h3 id="tradeModalTitle" class="text-base font-bold">Log New Trade</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Pick your buy strategy, stop-loss, and write why you entered</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Auto-size qty for 0.5% risk (15% max cap) &amp; check pre-trade discipline guards</p>
         </div>
         <button id="closeTradeModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">✕</button>
       </div>
@@ -1095,6 +333,28 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           <div>
             <label class="block font-semibold mb-1">Quantity</label>
             <input id="qtyInput" type="number" step="1" min="1" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 font-mono">
+          </div>
+        </div>
+
+        <!-- PRE-TRADE RISK SIZER BAR (UPGRADE #3) -->
+        <div class="rounded-xl border border-sky-500/30 bg-sky-500/[0.06] p-3 space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sky-700 dark:text-sky-300">Pre-Trade Risk Sizer</span>
+              <select id="riskPctSelect" class="px-2 py-1 rounded-lg bg-white dark:bg-slate-950 border border-sky-500/30 font-mono text-[11px] font-bold">
+                <option value="0.5" selected="">0.5% Risk (Volatile)</option>
+                <option value="0.75">0.75% Risk (Bull)</option>
+                <option value="1">1.0% Risk (Max)</option>
+              </select>
+            </div>
+            <button id="autoSizeQtyBtn" type="button" class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold text-[11px]">Auto-Size Qty (15% Cap)</button>
+          </div>
+          <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+            <span class="text-slate-500 dark:text-slate-400">Quick SL + 2R Target:</span>
+            <button type="button" data-sl-pct="4" class="quick-sl-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-900 hover:bg-sky-500/15 border border-slate-200 dark:border-slate-700 font-mono font-semibold">4% SL</button>
+            <button type="button" data-sl-pct="5" class="quick-sl-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-900 hover:bg-sky-500/15 border border-slate-200 dark:border-slate-700 font-mono font-semibold">5% SL</button>
+            <button type="button" data-sl-pct="6" class="quick-sl-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-900 hover:bg-sky-500/15 border border-slate-200 dark:border-slate-700 font-mono font-semibold">6% SL</button>
+            <button type="button" data-sl-pct="7.5" class="quick-sl-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-900 hover:bg-sky-500/15 border border-slate-200 dark:border-slate-700 font-mono font-semibold">7.5% SL</button>
           </div>
         </div>
 
@@ -1158,12 +418,70 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           <textarea id="notesInput" rows="3" placeholder="e.g. Clean consolidation breakout above ₹295 with 2x volume after 11:30 AM; GTT SL placed below swing low." class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700"></textarea>
         </div>
 
-        <!-- LIVE METRICS PREVIEW -->
+        <!-- LIVE METRICS & DISCIPLINE GUARDS PREVIEW -->
         <div id="liveCalcPreview" class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-3 rounded-xl bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px]"></div>
+        <div id="disciplineGuardsBox" class="space-y-1.5"></div>
 
         <div class="flex items-center justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
           <button id="cancelTradeModalBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-semibold">Cancel</button>
           <button id="saveTradeBtn" type="submit" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">Save Trade</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 1B: PARTIAL PROFIT BOOKING (UPGRADE #2) -->
+  <div id="partialModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/75 backdrop-blur-sm">
+    <div class="w-full max-w-md rounded-2xl border border-emerald-500/30 bg-white dark:bg-slate-900 shadow-2xl overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-emerald-500/10 to-sky-500/10 flex items-center justify-between">
+        <div>
+          <h3 id="partialModalTitle" class="text-base font-bold">Partial Profit Booking</h3>
+          <p id="partialModalSub" class="text-xs text-slate-500 dark:text-slate-400">Book 50% or 1/3 into realized P&amp;L and trail the rest</p>
+        </div>
+        <button id="closePartialModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">✕</button>
+      </div>
+
+      <form id="partialForm" class="p-5 space-y-4 text-xs">
+        <input id="partialTradeIdInput" type="hidden">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-slate-500 font-semibold">Quick Split:</span>
+          <button type="button" data-frac="0.5" class="partial-frac-btn px-3 py-1.5 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 font-bold">Book 50% (Volatile)</button>
+          <button type="button" data-frac="0.3333" class="partial-frac-btn px-3 py-1.5 rounded-lg bg-sky-600/15 hover:bg-sky-600/25 border border-sky-500/30 text-sky-700 dark:text-sky-300 font-bold">Book 1/3 (Bull)</button>
+          <button type="button" data-frac="0.25" class="partial-frac-btn px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 font-semibold">25%</button>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Sell Qty</label>
+            <input id="partialQtyInput" type="number" min="1" step="1" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 font-mono">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Sell Price</label>
+            <input id="partialPriceInput" type="number" min="0.01" step="0.01" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 font-mono">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold mb-1">Sell Date &amp; Time</label>
+            <input id="partialTimeInput" type="datetime-local" required="" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 font-mono">
+          </div>
+          <div>
+            <label class="block font-semibold mb-1">Brokerage &amp; DP Fees</label>
+            <input id="partialFeesInput" type="number" min="0" step="0.01" value="25" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 font-mono">
+          </div>
+        </div>
+
+        <label class="flex items-center gap-2 p-3 rounded-xl bg-emerald-500/[0.07] border border-emerald-500/25 cursor-pointer">
+          <input id="partialMoveBeCheckbox" type="checkbox" checked="" class="rounded">
+          <span class="font-semibold text-emerald-700 dark:text-emerald-300">Auto-move remaining Stop-Loss to Breakeven (Cost + 0.5%)</span>
+        </label>
+
+        <div id="partialPreviewBox" class="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px] space-y-1"></div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+          <button id="cancelPartialModalBtn" type="button" class="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold">Book Partial Profit</button>
         </div>
       </form>
     </div>
@@ -1283,13 +601,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-violet-500/10 to-sky-500/10 flex items-center justify-between">
         <div>
           <h3 class="text-base font-bold">Full AI Review Summary</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400">Auto-detected behavioral flags &amp; full copyable journal diagnostic</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Auto-detected behavioral flags, live Portfolio Heat, Running Trades &amp; Closed Trades</p>
         </div>
         <button id="closeAiReviewModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">✕</button>
       </div>
       <div class="p-5 overflow-y-auto space-y-3 text-xs">
         <div id="aiFlagsList" class="space-y-1.5"></div>
-        <textarea id="aiReviewTextarea" rows="15" readonly="" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px] leading-relaxed"></textarea>
+        <textarea id="aiReviewTextarea" rows="16" readonly="" class="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px] leading-relaxed"></textarea>
       </div>
       <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
         <button id="downloadAiReviewBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">Download .TXT</button>
@@ -1309,8 +627,12 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         <button id="closeTradeDiagBtn" type="button" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">✕</button>
       </div>
       <div id="tradeDiagBody" class="p-5 overflow-y-auto space-y-4 text-xs"></div>
-      <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 flex items-center justify-between gap-2">
-        <button id="copySingleDiagBtn" type="button" class="px-3.5 py-2 rounded-xl bg-violet-600/15 hover:bg-violet-600/25 border border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs font-semibold">Copy Diagnostic</button>
+      <div class="px-5 py-3.5 border-t border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 flex flex-wrap items-center justify-between gap-2">
+        <div class="flex items-center gap-1.5">
+          <button id="diagPrevBtn" type="button" class="px-2.5 py-2 rounded-xl bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-xs font-semibold">← Prev</button>
+          <button id="diagNextBtn" type="button" class="px-2.5 py-2 rounded-xl bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-xs font-semibold">Next →</button>
+          <button id="copySingleDiagBtn" type="button" class="px-3 py-2 rounded-xl bg-violet-600/15 hover:bg-violet-600/25 border border-violet-500/30 text-violet-700 dark:text-violet-300 text-xs font-semibold">Copy</button>
+        </div>
         <div class="flex items-center gap-2">
           <button id="editFromDiagBtn" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">Edit Basis / Notes</button>
           <button id="doneTradeDiagBtn" type="button" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold">Done</button>
@@ -1325,7 +647,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       <div class="px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-amber-500/10 to-emerald-500/10 flex items-center justify-between gap-3">
         <div>
           <h3 class="text-base font-bold text-slate-900 dark:text-white">GitHub Pages Site &amp; EOD Auto-Price Sync</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Host TradePulse just like a Sector Rotation site — auto-updates EOD LTP &amp; real daily candles at 4:05 PM IST</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Host TradePulse on GitHub Pages — auto-updates EOD LTP &amp; real daily candles at 4:05 PM IST</p>
         </div>
         <button id="closeGithubSyncModalBtn" type="button" class="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-500">✕</button>
       </div>
@@ -1366,7 +688,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
               <span>Create GitHub Repo &amp; Upload <code class="font-mono">index.html</code></span>
             </div>
             <p class="text-slate-600 dark:text-slate-300 leading-relaxed pl-7">
-              On GitHub, click <strong>+ → New repository</strong>, name it <code class="font-mono px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800">tradepulse</code>, select <strong>Public</strong>, check <strong>Add a README file</strong>, and click <strong>Create repository</strong>. Click <strong>Download index.html</strong> above, then click <strong>Add file → Upload files</strong> in your repo and commit <code class="font-mono">index.html</code>.
+              Click <strong>Download index.html</strong> above, then upload and commit <code class="font-mono">index.html</code> to your <code class="font-mono px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800">tradepulse</code> repo.
             </p>
           </div>
 
@@ -1374,11 +696,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
                 <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 inline-flex items-center justify-center font-mono text-[11px]">2</span>
-                <span>Create new file named <code class="font-mono text-sky-600 dark:text-sky-400">watchlist.txt</code></span>
+                <span>Create / Update <code class="font-mono text-sky-600 dark:text-sky-400">watchlist.txt</code></span>
               </div>
               <button id="copyWatchlistBtn" type="button" class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold">Copy watchlist.txt</button>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 pl-7">Auto-filled from your Running Trades &amp; journal symbols. Add new NSE stock symbols here whenever you buy them.</p>
             <textarea id="ghWatchlistCode" rows="4" readonly="" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px]"></textarea>
           </div>
 
@@ -1386,11 +707,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
                 <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 inline-flex items-center justify-center font-mono text-[11px]">3</span>
-                <span>Create new file named <code class="font-mono text-sky-600 dark:text-sky-400">scripts/fetch_eod.py</code></span>
+                <span>Create <code class="font-mono text-sky-600 dark:text-sky-400">scripts/fetch_eod.py</code></span>
               </div>
               <button id="copyFetchPyBtn" type="button" class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold">Copy fetch_eod.py</button>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 pl-7">Typing <code class="font-mono">/</code> in GitHub's filename box automatically creates the <code class="font-mono">scripts</code> folder.</p>
             <textarea id="ghFetchPyCode" rows="6" readonly="" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px]"></textarea>
           </div>
 
@@ -1398,24 +718,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <div class="flex flex-wrap items-center justify-between gap-2">
               <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-white">
                 <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 inline-flex items-center justify-center font-mono text-[11px]">4</span>
-                <span>Create new file named <code class="font-mono text-sky-600 dark:text-sky-400">.github/workflows/eod-sync.yml</code></span>
+                <span>Create <code class="font-mono text-sky-600 dark:text-sky-400">.github/workflows/eod-sync.yml</code></span>
               </div>
               <button id="copyWorkflowYmlBtn" type="button" class="px-3 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-semibold">Copy eod-sync.yml</button>
             </div>
-            <p class="text-[11px] text-slate-500 dark:text-slate-400 pl-7">Runs automatically Mon–Fri at 4:05 PM IST after NSE closes and saves <code class="font-mono">data/eod_prices.json</code>.</p>
             <textarea id="ghWorkflowYmlCode" rows="6" readonly="" class="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-[11px]"></textarea>
-          </div>
-
-          <div class="rounded-xl border border-emerald-500/25 bg-emerald-500/[0.05] p-3.5 space-y-1.5">
-            <div class="flex items-center gap-2 font-bold text-emerald-700 dark:text-emerald-300">
-              <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 inline-flex items-center justify-center font-mono text-[11px]">5</span>
-              <span>Turn On Your Live Site &amp; Run First Sync</span>
-            </div>
-            <ul class="list-disc pl-11 space-y-1 text-slate-700 dark:text-slate-300">
-              <li>Go to <strong>Actions → Fetch EOD Stock Prices for TradePulse → Run workflow</strong> to generate your first <code class="font-mono">data/eod_prices.json</code>.</li>
-              <li>Go to <strong>Settings → Pages</strong> → set Branch to <strong>main</strong> &amp; folder <strong>/ (root)</strong> → click <strong>Save</strong>.</li>
-              <li>Open <code class="font-mono text-emerald-600 dark:text-emerald-400">https://YOUR-USERNAME.github.io/tradepulse/</code> — your trades stay private in your browser while EOD prices &amp; real daily candles auto-update every evening!</li>
-            </ul>
           </div>
         </div>
       </div>
@@ -1448,7 +755,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         theme: 'dark',
         eodJsonUrl: './data/eod_prices.json',
         autoSyncEod: true,
-        lastEodSync: null
+        lastEodSync: null,
+        marketRegime: 'yellow',
+        maxHeatPct: 3,
+        showEma10: true,
+        showEma20: true
       };
 
       const GITHUB_FETCH_PY = [
@@ -1573,15 +884,15 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       const DEMO_TRADES = [
         {
           id: 'demo-open-1', status: 'open', symbol: 'BEL', side: 'Long',
-          buyTime: '2026-11-18T11:40', buyPrice: 292.5, currentPrice: 304.8,
-          qty: 160, stopLoss: 280.0, targetPrice: 320.0, fees: 48,
+          buyTime: '2026-11-18T11:40', buyPrice: 292.5, currentPrice: 312.5,
+          qty: 120, stopLoss: 280.0, targetPrice: 317.5, fees: 42,
           setup: 'Breakout (Range / Resistance)', planFollowed: 'Yes', emotion: 'Calm',
-          notes: 'Clean 3-week base breakout above ₹291 with rising volume after 11:30 AM. GTT SL at ₹280 (₹2,000 max risk).'
+          notes: 'Clean 3-week base breakout above ₹291 with rising volume after 11:30 AM. GTT SL at ₹280 (₹1,500 risk).'
         },
         {
           id: 'demo-open-2', status: 'open', symbol: 'TATAPOWER', side: 'Long',
           buyTime: '2026-11-19T14:55', buyPrice: 446.0, currentPrice: 453.4,
-          qty: 110, stopLoss: 428.0, targetPrice: 485.0, fees: 52,
+          qty: 80, stopLoss: 427.0, targetPrice: 484.0, fees: 45,
           setup: 'Pullback to 9/10/20 EMA', planFollowed: 'Yes', emotion: 'Confident',
           notes: 'Tight daily inside bar right on 10 EMA support near market close.'
         },
@@ -1726,6 +1037,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       function normalizeTrade(t) {
         const status = t.status === 'open' || (!t.sellTime && !Number(t.sellPrice)) ? 'open' : 'closed';
         const buyPrice = Math.max(0.01, Number(t.buyPrice) || 1);
+        const stopLoss = Number(t.stopLoss) > 0 ? Number(t.stopLoss) : null;
+        const initialStopLoss = Number(t.initialStopLoss) > 0 ? Number(t.initialStopLoss) : stopLoss;
         return {
           id: t.id || uid(),
           status,
@@ -1737,7 +1050,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           sellPrice: status === 'closed' ? Math.max(0.01, Number(t.sellPrice) || buyPrice) : null,
           currentPrice: status === 'open' ? Math.max(0.01, Number(t.currentPrice) || buyPrice) : null,
           qty: Math.max(1, Number(t.qty) || 1),
-          stopLoss: Number(t.stopLoss) > 0 ? Number(t.stopLoss) : null,
+          stopLoss,
+          initialStopLoss,
           targetPrice: Number(t.targetPrice) > 0 ? Number(t.targetPrice) : null,
           fees: Math.max(0, Number(t.fees) || 0),
           setup: t.setup || BUY_STRATEGIES[0],
@@ -1802,14 +1116,35 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         const capitalUsed = t.buyPrice * t.qty;
         const returnPct = capitalUsed > 0 ? (netPnl / capitalUsed) * 100 : 0;
 
-        const riskPerShare = t.stopLoss ? Math.abs(t.buyPrice - t.stopLoss) : null;
-        const riskAmount = riskPerShare && riskPerShare > 0 ? riskPerShare * t.qty : null;
+        // Initial 1R risk (used for R-multiple & milestones even after SL moves to breakeven)
+        const baseSl = t.initialStopLoss || t.stopLoss;
+        const initRiskPerShare = baseSl ? Math.abs(t.buyPrice - baseSl) : null;
+        const riskAmount = initRiskPerShare && initRiskPerShare > 0 ? initRiskPerShare * t.qty : null;
         const rMultiple = riskAmount ? netPnl / riskAmount : null;
 
+        // True live downside risk for Portfolio Heat (breakeven or profit-locked SL = ₹0 risk)
+        let activeRisk = 0;
+        let isRiskFree = false;
+        if (isOpen && t.stopLoss) {
+          const downsidePerShare = (t.buyPrice - t.stopLoss) * dir;
+          if (downsidePerShare <= 0) {
+            activeRisk = 0;
+            isRiskFree = true;
+          } else {
+            activeRisk = downsidePerShare * t.qty;
+          }
+        } else if (isOpen && !t.stopLoss) {
+          activeRisk = capitalUsed * 0.05; // assume 5% unhedged exposure warning
+        }
+
+        const price15R = initRiskPerShare ? +(t.buyPrice + dir * initRiskPerShare * 1.5).toFixed(2) : null;
+        const price2R = initRiskPerShare ? +(t.buyPrice + dir * initRiskPerShare * 2.0).toFixed(2) : null;
+        const beStopPrice = +(t.buyPrice * (dir === 1 ? 1.005 : 0.995)).toFixed(2);
+
         let plannedRR = null;
-        if (riskPerShare && riskPerShare > 0 && t.targetPrice) {
+        if (initRiskPerShare && initRiskPerShare > 0 && t.targetPrice) {
           const rewardPerShare = (t.targetPrice - t.buyPrice) * dir;
-          if (rewardPerShare > 0) plannedRR = rewardPerShare / riskPerShare;
+          if (rewardPerShare > 0) plannedRR = rewardPerShare / initRiskPerShare;
         }
 
         const buyMs = toMs(t.buyTime);
@@ -1823,7 +1158,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         return {
           ...t, isOpen, exitPrice, grossPnl, netPnl, capitalUsed, returnPct,
-          riskAmount, rMultiple, plannedRR, buyMs, sellMs, holdMs, timeWindow
+          riskAmount, activeRisk, isRiskFree, rMultiple, plannedRR,
+          price15R, price2R, beStopPrice, buyMs, sellMs, holdMs, timeWindow
         };
       }
 
@@ -1842,7 +1178,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         const netPnl = closedTrades.reduce((s, t) => s + t.netPnl, 0);
         const totalFees = closedTrades.reduce((s, t) => s + t.fees, 0);
         const unrealizedPnl = openTrades.reduce((s, t) => s + t.netPnl, 0);
-        const openRisk = openTrades.reduce((s, t) => s + (t.riskAmount || 0), 0);
+        const openRisk = openTrades.reduce((s, t) => s + t.activeRisk, 0);
+        const deployedCapital = openTrades.reduce((s, t) => s + t.capitalUsed, 0);
+        const riskFreeCount = openTrades.filter(t => t.isRiskFree).length;
+        const noSlCount = openTrades.filter(t => !t.stopLoss).length;
+        const uniqueOpenSymbols = new Set(openTrades.map(t => t.symbol)).size;
 
         const avgWin = wins.length ? grossProfit / wins.length : 0;
         const avgLoss = losses.length ? Math.abs(grossLoss / losses.length) : 0;
@@ -1869,17 +1209,23 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         const planYes = closedTrades.filter(t => t.planFollowed === 'Yes').length;
         const planPct = totalTrades ? (planYes / totalTrades) * 100 : 100;
+        const deployedPct = equity > 0 ? (deployedCapital / equity) * 100 : 0;
+        const cashBuffer = equity - deployedCapital;
+        const cashBufferPct = 100 - deployedPct;
+        const heatPct = equity > 0 ? (openRisk / equity) * 100 : 0;
 
         return {
           allEnriched, openTrades, closedTrades, wins, losses, totalTrades, winRate,
           grossProfit, grossLoss, netPnl, totalFees, unrealizedPnl, openRisk,
+          deployedCapital, deployedPct, cashBuffer, cashBufferPct, heatPct,
+          riskFreeCount, noSlCount, uniqueOpenSymbols,
           avgWin, avgLoss, payoffRatio, profitFactor, expectancyR,
           startCap, currentEquity: equity, returnPct: ((equity - startCap) / startCap) * 100,
           maxDdPct, maxWinStreak: maxW, maxLossStreak: maxL, planPct, equityCurve
         };
       }
 
-      /* ---------- SYNTHETIC & REAL OHLC CANDLES ---------- */
+      /* ---------- SYNTHETIC & REAL OHLC CANDLES + EMA + MERGE LOTS ---------- */
       function createSeededRng(seedStr) {
         let h = 2166136261 >>> 0;
         for (let i = 0; i < seedStr.length; i++) {
@@ -1939,7 +1285,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           prevClose = close;
         }
 
-        // Pin exact anchor prices onto closest candles
         anchors.forEach(anc => {
           let bestIdx = 0, bestDiff = Infinity;
           candles.forEach((c, idx) => {
@@ -1954,10 +1299,128 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         return candles;
       }
 
+      function computeEmaSeries(candles, period) {
+        if (!Array.isArray(candles)) return [];
+        if (candles.length < period) return candles.map(() => null);
+        const out = new Array(candles.length).fill(null);
+        let sum = 0;
+        for (let i = 0; i < period; i++) sum += Number(candles[i].close) || 0;
+        let ema = sum / period;
+        out[period - 1] = +ema.toFixed(2);
+        const k = 2 / (period + 1);
+        for (let i = period; i < candles.length; i++) {
+          const close = Number(candles[i].close) || ema;
+          ema = close * k + ema * (1 - k);
+          out[i] = +ema.toFixed(2);
+        }
+        return out;
+      }
+
+      function getLatestSeriesValue(series) {
+        if (!Array.isArray(series)) return null;
+        for (let i = series.length - 1; i >= 0; i--) {
+          if (Number.isFinite(series[i])) return series[i];
+        }
+        return null;
+      }
+
+      function getDuplicateOpenGroups() {
+        const groups = new Map();
+        state.trades.filter(t => t.status === 'open').forEach(t => {
+          const key = `${t.symbol}|${t.side}`;
+          if (!groups.has(key)) groups.set(key, { key, symbol: t.symbol, side: t.side, lots: [] });
+          groups.get(key).lots.push(t);
+        });
+        return Array.from(groups.values()).filter(g => g.lots.length >= 2);
+      }
+
+      function mergeDuplicateOpenLots() {
+        const dupGroups = getDuplicateOpenGroups();
+        if (!dupGroups.length) {
+          showToast('No duplicate open lots to merge.', 'info');
+          return;
+        }
+
+        const summary = dupGroups.map(g => {
+          const totalQty = g.lots.reduce((sum, l) => sum + l.qty, 0);
+          const avgBuy = g.lots.reduce((sum, l) => sum + l.buyPrice * l.qty, 0) / totalQty;
+          return `${g.symbol} (${g.lots.length} lots → ${totalQty} qty @ ${fmtPrice(avgBuy)})`;
+        }).join(', ');
+
+        openConfirm(
+          'Merge Duplicate Open Lots?',
+          `Combine same-symbol open lots into single weighted-average positions: ${summary}?`,
+          () => {
+            const removeIds = new Set();
+            const replacements = new Map();
+
+            dupGroups.forEach(g => {
+              const sorted = [...g.lots].sort((a, b) => toMs(a.buyTime) - toMs(b.buyTime));
+              const oldest = sorted[0];
+              const newest = sorted[sorted.length - 1];
+              const totalQty = sorted.reduce((sum, l) => sum + l.qty, 0);
+              const avgBuy = +(sorted.reduce((sum, l) => sum + l.buyPrice * l.qty, 0) / totalQty).toFixed(2);
+              const totalFees = +(sorted.reduce((sum, l) => sum + (Number(l.fees) || 0), 0)).toFixed(2);
+
+              const slLots = sorted.filter(l => Number(l.stopLoss) > 0);
+              const mergedSl = slLots.length
+                ? +(slLots.reduce((sum, l) => sum + l.stopLoss * l.qty, 0) / slLots.reduce((sum, l) => sum + l.qty, 0)).toFixed(2)
+                : null;
+
+              const tgtLots = sorted.filter(l => Number(l.targetPrice) > 0);
+              const mergedTgt = tgtLots.length
+                ? +(tgtLots.reduce((sum, l) => sum + l.targetPrice * l.qty, 0) / tgtLots.reduce((sum, l) => sum + l.qty, 0)).toFixed(2)
+                : null;
+
+              const bestOhlcLot = sorted.find(l => l.manualOhlc && Array.isArray(l.customOhlc))
+                || sorted.reduce((best, l) => ((Array.isArray(l.customOhlc) ? l.customOhlc.length : 0) > (Array.isArray(best?.customOhlc) ? best.customOhlc.length : 0) ? l : best), null);
+
+              const uniqueNotes = Array.from(new Set(sorted.map(l => (l.notes || '').trim()).filter(Boolean)));
+              const lotTag = `[Merged ${sorted.length} lots: ${sorted.map(l => `${l.qty}@${l.buyPrice}`).join(' + ')}]`;
+              const mergedNotes = [...uniqueNotes, lotTag].join(' · ');
+
+              const mergedTrade = normalizeTrade({
+                ...oldest,
+                id: oldest.id,
+                buyTime: oldest.buyTime,
+                buyPrice: avgBuy,
+                currentPrice: newest.currentPrice || oldest.currentPrice || avgBuy,
+                qty: totalQty,
+                stopLoss: mergedSl,
+                initialStopLoss: mergedSl,
+                targetPrice: mergedTgt,
+                fees: totalFees,
+                notes: mergedNotes,
+                customOhlc: bestOhlcLot ? bestOhlcLot.customOhlc : null,
+                manualOhlc: Boolean(bestOhlcLot && bestOhlcLot.manualOhlc),
+                eodChangePct: typeof newest.eodChangePct === 'number' ? newest.eodChangePct : oldest.eodChangePct,
+                eodAsOf: newest.eodAsOf || oldest.eodAsOf || null
+              });
+
+              replacements.set(oldest.id, mergedTrade);
+              sorted.slice(1).forEach(l => {
+                removeIds.add(l.id);
+                if (state.activeTradeId === l.id) state.activeTradeId = oldest.id;
+              });
+            });
+
+            state.trades = state.trades
+              .filter(t => !removeIds.has(t.id))
+              .map(t => replacements.get(t.id) || t);
+
+            saveState();
+            renderAll();
+            showToast(`Merged duplicate open lots for ${dupGroups.length} stock(s)!`, 'success');
+          }
+        );
+      }
+
       /* ---------- RENDERING ---------- */
       function renderAll() {
         const stats = computeAnalytics();
         renderKpiCards(stats);
+        renderPortfolioHeatBar(stats);
+        renderAiCoach(stats);
         renderRunningTrades(stats);
         renderChartSelectorAndCanvas(stats);
         renderPeriodSection(stats);
@@ -2001,10 +1464,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             cls: s.maxDdPct < -5 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-900 dark:text-white'
           },
           {
-            label: 'Open Risk & Fees',
-            val: fmtMoney(s.openRisk),
+            label: 'Live Open Heat & Fees',
+            val: `${fmtMoney(s.openRisk)} (${s.heatPct.toFixed(1)}%)`,
             sub: `Fees Paid: ${fmtMoney(s.totalFees)}`,
-            cls: 'text-sky-600 dark:text-sky-400'
+            cls: s.heatPct > (state.settings.maxHeatPct || 3) ? 'text-rose-600 dark:text-rose-400' : 'text-sky-600 dark:text-sky-400'
           }
         ];
 
@@ -2017,10 +1480,266 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         `).join('');
       }
 
+      /* ---------- UPGRADE #1: PORTFOLIO HEAT & CASH BUFFER BAR ---------- */
+      function renderPortfolioHeatBar(s) {
+        const regime = state.settings.marketRegime || 'yellow';
+        const maxHeatPct = Number(state.settings.maxHeatPct) || 3;
+        const maxHeatMoney = s.currentEquity * (maxHeatPct / 100);
+        const regimeCfg = {
+          green: { label: 'GREEN · BULL TREND', maxSlots: 6, maxDeployPct: 85, cls: 'bg-emerald-500 text-white' },
+          yellow: { label: 'YELLOW · CHOPPY / VOLATILE', maxSlots: 4, maxDeployPct: 60, cls: 'bg-amber-500 text-slate-950' },
+          red: { label: 'RED · DOWNTREND (CASH)', maxSlots: 0, maxDeployPct: 20, cls: 'bg-rose-600 text-white' }
+        }[regime] || { label: 'YELLOW', maxSlots: 4, maxDeployPct: 60, cls: 'bg-amber-500 text-slate-950' };
+
+        document.querySelectorAll('.regime-btn').forEach(btn => {
+          const active = btn.dataset.regime === regime;
+          if (active) {
+            btn.className = `regime-btn px-2.5 py-1 rounded-lg font-bold shadow-sm ${regimeCfg.cls}`;
+          } else {
+            btn.className = 'regime-btn px-2.5 py-1 rounded-lg font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white';
+          }
+        });
+
+        const slots = s.uniqueOpenSymbols;
+        let phaseLabel = 'CASH / READY';
+        let phaseCls = 'bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30';
+        const overExposed = s.heatPct > maxHeatPct || s.deployedPct > regimeCfg.maxDeployPct + 15 || (regime === 'red' && slots > 0) || slots > regimeCfg.maxSlots;
+
+        if (overExposed) {
+          phaseLabel = 'FREEZE NEW BUYS';
+          phaseCls = 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-500/40';
+        } else if (slots === 0) {
+          phaseLabel = regime === 'red' ? 'PROTECT CASH' : 'READY FOR 2 PILOTS';
+          phaseCls = 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30';
+        } else if (slots <= 2) {
+          phaseLabel = 'PHASE 1 · PILOT TEST';
+          phaseCls = 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30';
+        } else if (slots <= 4) {
+          phaseLabel = 'PHASE 2 · EARNED SCALING';
+          phaseCls = 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30';
+        } else {
+          phaseLabel = 'PHASE 3 · FULL CRUISE';
+          phaseCls = 'bg-violet-500/15 text-violet-700 dark:text-violet-300 border-violet-500/30';
+        }
+
+        const badge = document.getElementById('exposurePhaseBadge');
+        badge.textContent = phaseLabel;
+        badge.className = `px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${phaseCls}`;
+
+        const deployBarW = Math.min(100, Math.max(0, s.deployedPct));
+        const deployColor = s.deployedPct > regimeCfg.maxDeployPct + 10 ? 'bg-rose-500' : (s.deployedPct > regimeCfg.maxDeployPct ? 'bg-amber-500' : 'bg-emerald-500');
+        const heatRatio = Math.min(100, Math.max(0, (s.heatPct / maxHeatPct) * 100));
+        const heatColor = s.heatPct > maxHeatPct ? 'bg-rose-500' : (s.heatPct >= maxHeatPct * 0.8 ? 'bg-amber-500' : 'bg-sky-500');
+
+        document.getElementById('portfolioHeatMetrics').innerHTML = `
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-600 dark:text-slate-300">Capital Deployed</span>
+              <span class="font-mono font-bold ${s.deployedPct > regimeCfg.maxDeployPct ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-400'}">${s.deployedPct.toFixed(1)}% / ${regimeCfg.maxDeployPct}% cap</span>
+            </div>
+            <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden"><div class="h-full ${deployColor} transition-all" style="width:${deployBarW}%"></div></div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span>In Stocks: ${fmtMoney(s.deployedCapital)}</span>
+              <span>Cash: ${fmtMoney(s.cashBuffer)} (${s.cashBufferPct.toFixed(0)}%)</span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-600 dark:text-slate-300">Live Portfolio Heat</span>
+              <span class="font-mono font-bold ${s.heatPct > maxHeatPct ? 'text-rose-500' : 'text-sky-600 dark:text-sky-400'}">${s.heatPct.toFixed(2)}% / ${maxHeatPct}% max</span>
+            </div>
+            <div class="h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden"><div class="h-full ${heatColor} transition-all" style="width:${heatRatio}%"></div></div>
+            <div class="flex items-center justify-between text-[11px] font-mono text-slate-500">
+              <span>Risk: ${fmtMoney(s.openRisk)} / ${fmtMoney(maxHeatMoney)}</span>
+              <span>${s.riskFreeCount} risk-free${s.noSlCount ? ` · <strong class="text-rose-500">${s.noSlCount} no SL!</strong>` : ''}</span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 flex flex-col justify-between">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-semibold text-slate-600 dark:text-slate-300">Active Stock Slots</span>
+              <span class="font-mono font-bold ${slots > regimeCfg.maxSlots ? 'text-rose-500' : 'text-slate-900 dark:text-white'}">${slots} / ${regimeCfg.maxSlots} max</span>
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              Regime: <strong class="text-slate-800 dark:text-slate-200">${regimeCfg.label}</strong>
+            </div>
+            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+              ${slots >= 2 && s.riskFreeCount === 0 ? 'Hold buys until 1 pilot hits +1.5R &amp; moves SL to BE.' : (regime === 'red' ? 'Red regime: sit in cash &amp; protect equity.' : 'Max 0.5% risk (₹1,500) per new entry after 10:30 AM.')}
+            </div>
+          </div>
+        `;
+
+        const alertEl = document.getElementById('portfolioHeatAlert');
+        const warnings = [];
+        if (s.heatPct > maxHeatPct) warnings.push(`Portfolio Heat (${s.heatPct.toFixed(2)}%) exceeds your ${maxHeatPct}% cap (${fmtMoney(maxHeatMoney)}) — freeze new buys until risk drops.`);
+        if (s.deployedPct > regimeCfg.maxDeployPct + 10) warnings.push(`Deployed Capital (${s.deployedPct.toFixed(1)}%) exceeds your ${regime.toUpperCase()} regime target (${regimeCfg.maxDeployPct}%) — keep cash buffer.`);
+        if (s.noSlCount > 0) warnings.push(`${s.noSlCount} open trade(s) have no Stop-Loss logged — place Zerodha GTT stops immediately.`);
+        if (regime === 'red' && slots > 0) warnings.push(`Market Regime is RED — avoid new long entries and trail/tighten existing stops.`);
+
+        if (warnings.length) {
+          alertEl.className = 'rounded-xl border border-rose-500/35 bg-rose-500/10 text-rose-700 dark:text-rose-300 px-3.5 py-2.5 text-xs font-semibold space-y-1';
+          alertEl.innerHTML = warnings.map(w => `<div>⚠ ${escapeHtml(w)}</div>`).join('');
+          alertEl.classList.remove('hidden');
+        } else {
+          alertEl.classList.add('hidden');
+        }
+      }
+
+      /* ---------- UPGRADE #5: AI PERFORMANCE COACH & EDGE LAB ---------- */
+      function renderAiCoach(s) {
+        const closed = s.closedTrades;
+        const open = s.openTrades;
+
+        // Discipline score (0-100) across closed + open execution quality
+        let score = 80;
+        const pre1030Closed = closed.filter(t => t.timeWindow.includes('09:15'));
+        const post1030Closed = closed.filter(t => !t.timeWindow.includes('09:15'));
+        const pre1030Open = open.filter(t => t.timeWindow.includes('09:15'));
+        const pre1030Pnl = pre1030Closed.reduce((sum, t) => sum + t.netPnl, 0);
+        const post1030Pnl = post1030Closed.reduce((sum, t) => sum + t.netPnl, 0);
+        const pre1030Wr = pre1030Closed.length ? (pre1030Closed.filter(t => t.netPnl > 0).length / pre1030Closed.length) * 100 : 0;
+        const post1030Wr = post1030Closed.length ? (post1030Closed.filter(t => t.netPnl > 0).length / post1030Closed.length) * 100 : 0;
+
+        const offPlanClosed = closed.filter(t => t.planFollowed === 'No' || t.emotion === 'FOMO' || t.emotion === 'Revenge');
+        const offPlanLoss = offPlanClosed.filter(t => t.netPnl < 0).reduce((sum, t) => sum + Math.abs(t.netPnl), 0);
+        const pre1030LossOnly = pre1030Closed.filter(t => t.netPnl < 0).reduce((sum, t) => sum + Math.abs(t.netPnl), 0);
+
+        if (s.heatPct > (state.settings.maxHeatPct || 3)) score -= 14;
+        if (s.noSlCount > 0) score -= Math.min(20, s.noSlCount * 8);
+        if (pre1030Open.length > 0) score -= Math.min(12, pre1030Open.length * 4);
+        if (closed.length >= 2) {
+          if (s.payoffRatio >= 1.8) score += 10;
+          else if (s.payoffRatio < 1.0) score -= 15;
+          if (s.planPct >= 85) score += 6;
+          else if (s.planPct < 70) score -= 12;
+          if (pre1030Pnl < 0) score -= 8;
+        }
+        score = Math.max(25, Math.min(100, Math.round(score)));
+        const grade = score >= 90 ? 'A+' : score >= 82 ? 'A' : score >= 72 ? 'B' : score >= 60 ? 'C' : 'D';
+        const gradeCls = grade.startsWith('A')
+          ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/35'
+          : (grade === 'B' ? 'bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/35' : 'bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/35');
+
+        const badge = document.getElementById('aiCoachGradeBadge');
+        badge.textContent = `GRADE ${grade} · ${score}/100`;
+        badge.className = `px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border ${gradeCls}`;
+
+        // Expectancy & Hold Time asymmetry
+        const expectancyMoney = s.totalTrades ? s.netPnl / s.totalTrades : 0;
+        const avgWinHold = s.wins.length ? s.wins.reduce((a, t) => a + t.holdMs, 0) / s.wins.length : 0;
+        const avgLossHold = s.losses.length ? s.losses.reduce((a, t) => a + t.holdMs, 0) / s.losses.length : 0;
+
+        // What-If Simulator
+        const simNoPre1030 = s.netPnl - pre1030Pnl;
+        const simNoOffPlan = s.netPnl + offPlanLoss;
+
+        // Strategy leaderboard
+        const stratMap = {};
+        closed.forEach(t => {
+          if (!stratMap[t.setup]) stratMap[t.setup] = { name: t.setup, net: 0, cnt: 0, wins: 0 };
+          stratMap[t.setup].net += t.netPnl;
+          stratMap[t.setup].cnt += 1;
+          if (t.netPnl > 0) stratMap[t.setup].wins += 1;
+        });
+        const stratList = Object.values(stratMap).sort((a, b) => b.net - a.net);
+        const topStrat = stratList[0] || null;
+        const worstStrat = stratList.length > 1 ? stratList[stratList.length - 1] : null;
+
+        document.getElementById('aiCoachMetricsGrid').innerHTML = `
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-1">
+            <div class="text-[11px] font-semibold text-slate-500">Expectancy &amp; Hold Time</div>
+            <div class="font-mono text-base font-extrabold tabular-nums ${expectancyMoney >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${fmtMoney(expectancyMoney, true)} / trade</div>
+            <div class="text-[11px] text-slate-500">Win hold <strong>${formatDuration(avgWinHold)}</strong> vs Loss <strong>${formatDuration(avgLossHold)}</strong></div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-1">
+            <div class="text-[11px] font-semibold text-slate-500">Entry Window Edge (10:30 Rule)</div>
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-slate-500">09:15–10:30 (${pre1030Closed.length}):</span>
+              <span class="font-bold ${pre1030Pnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${fmtMoney(pre1030Pnl, true)} (${pre1030Wr.toFixed(0)}%)</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-slate-500">Post-10:30 (${post1030Closed.length}):</span>
+              <span class="font-bold ${post1030Pnl >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${fmtMoney(post1030Pnl, true)} (${post1030Wr.toFixed(0)}%)</span>
+            </div>
+            <div class="text-[10px] text-slate-400">${pre1030Open.length ? `⚠ ${pre1030Open.length} running trade(s) entered pre-10:30` : '✓ 0 running trades entered pre-10:30'}</div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-1">
+            <div class="text-[11px] font-semibold text-slate-500">What-If Edge Recovery</div>
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-slate-500">0 Pre-10:30 Buys:</span>
+              <span class="font-bold ${simNoPre1030 >= s.netPnl ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">${fmtMoney(simNoPre1030, true)}</span>
+            </div>
+            <div class="flex items-center justify-between text-[11px] font-mono">
+              <span class="text-slate-500">0 Off-Plan/FOMO:</span>
+              <span class="font-bold ${simNoOffPlan > s.netPnl ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400'}">${fmtMoney(simNoOffPlan, true)}</span>
+            </div>
+            <div class="text-[10px] text-slate-400">Mistake Cost: <strong class="text-rose-500">${fmtMoney(-(offPlanLoss + pre1030LossOnly))}</strong></div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 p-3 space-y-1">
+            <div class="text-[11px] font-semibold text-slate-500">Strategy Edge Leaderboard</div>
+            ${topStrat ? `
+              <div class="text-[11px] truncate"><span class="text-emerald-600 dark:text-emerald-400 font-bold">Best:</span> ${escapeHtml(topStrat.name)} <span class="font-mono font-bold">(${fmtMoney(topStrat.net, true)})</span></div>
+              <div class="text-[11px] truncate">${worstStrat ? `<span class="text-rose-500 font-bold">Weak:</span> ${escapeHtml(worstStrat.name)} <span class="font-mono">(${fmtMoney(worstStrat.net, true)})</span>` : `<span class="text-slate-400">${topStrat.wins}/${topStrat.cnt} wins so far</span>`}</div>
+            ` : `<div class="text-[11px] text-slate-400">Close trades to rank your buy strategies automatically.</div>`}
+          </div>
+        `;
+
+        // Live coaching insights
+        const tips = [];
+        const readyForBe = open.filter(t => !t.isRiskFree && t.rMultiple !== null && t.rMultiple >= 1.5);
+        const readyForPartial = open.filter(t => t.rMultiple !== null && t.rMultiple >= 2.0);
+        if (readyForPartial.length) {
+          tips.push({ tone: 'good', title: `Profit Action: ${readyForPartial.map(t => t.symbol).join(', ')} hit +2R+`, body: 'Book 50% (volatile) or 1/3 (bull) via the Partial button and trail the remaining shares with the 10 EMA.' });
+        } else if (readyForBe.length) {
+          tips.push({ tone: 'good', title: `Risk-Free Unlock: ${readyForBe.map(t => t.symbol).join(', ')} hit +1.5R`, body: 'Click "Move SL → Breakeven" on the card to drop open portfolio heat to ₹0 on those slots.' });
+        }
+
+        const weakOpen = open.filter(t => t.rMultiple !== null && t.rMultiple <= -0.65);
+        if (weakOpen.length) {
+          tips.push({ tone: 'warn', title: `Stop Watch: ${weakOpen.map(t => `${t.symbol} (${t.rMultiple.toFixed(2)}R)`).join(', ')}`, body: 'Respect your Zerodha GTT Stop-Loss — never average down and wait until next day post-10:30 before replacing.' });
+        }
+
+        if (pre1030Open.length) {
+          tips.push({ tone: 'warn', title: `${pre1030Open.length} Open Position(s) Bought Before 10:30 AM`, body: `Tickers: ${pre1030Open.map(t => t.symbol).join(', ')}. Avoid fresh 09:15–10:30 entries to protect your edge.` });
+        }
+
+        if (closed.length >= 3 && s.payoffRatio < 1.3) {
+          tips.push({ tone: 'warn', title: `Payoff Ratio Tight (${s.payoffRatio.toFixed(2)} : 1)`, body: `Avg win (${fmtMoney(s.avgWin)}) vs Avg loss (${fmtMoney(s.avgLoss)}). Hold winners to at least +2R instead of scratching early.` });
+        }
+
+        if (!tips.length) {
+          tips.push({ tone: 'good', title: 'Execution Discipline Looking Sharp', body: 'Keep sticking to post-10:30 entries, 0.5% fixed risk per trade, and 3:15 PM daily-close trailing checks.' });
+        }
+
+        document.getElementById('aiCoachInsightsBox').innerHTML = tips.slice(0, 4).map(tip => `
+          <div class="rounded-xl border px-3 py-2 text-xs ${tip.tone === 'warn' ? 'border-amber-500/30 bg-amber-500/[0.06]' : 'border-emerald-500/30 bg-emerald-500/[0.06]'}">
+            <div class="font-bold ${tip.tone === 'warn' ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300'}">${tip.tone === 'warn' ? '⚡' : '✓'} ${escapeHtml(tip.title)}</div>
+            <div class="text-[11px] text-slate-600 dark:text-slate-300 mt-0.5">${escapeHtml(tip.body)}</div>
+          </div>
+        `).join('');
+      }
+
+      /* ---------- RUNNING TRADES (WITH UPGRADES #2, #4 & #5) ---------- */
       function renderRunningTrades(s) {
         const badge = document.getElementById('runningUnrealizedBadge');
         badge.textContent = `Live Unrealized: ${fmtMoney(s.unrealizedPnl, true)}`;
         badge.className = `font-mono text-xs font-bold px-2.5 py-1.5 rounded-xl border tabular-nums ${s.unrealizedPnl >= 0 ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30' : 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/30'}`;
+
+        const mergeBtn = document.getElementById('mergeOpenLotsBtn');
+        const dupGroups = getDuplicateOpenGroups();
+        if (mergeBtn) {
+          if (dupGroups.length) {
+            const totalExtra = dupGroups.reduce((sum, g) => sum + g.lots.length, 0);
+            mergeBtn.textContent = `Merge Lots (${dupGroups.length} stock${dupGroups.length > 1 ? 's' : ''} · ${totalExtra} lots)`;
+            mergeBtn.classList.remove('hidden');
+          } else {
+            mergeBtn.classList.add('hidden');
+          }
+        }
 
         const grid = document.getElementById('runningTradesGrid');
         if (!s.openTrades.length) {
@@ -2034,7 +1753,41 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           const eodBadge = t.eodAsOf && typeof t.eodChangePct === 'number'
             ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold ${t.eodChangePct >= 0 ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400'}">EOD ${t.eodChangePct >= 0 ? '+' : ''}${t.eodChangePct.toFixed(1)}%</span>`
             : '';
-          const rrText = t.plannedRR ? `1 : ${t.plannedRR.toFixed(2)}` : (t.rMultiple !== null ? `${t.rMultiple >= 0 ? '+' : ''}${t.rMultiple.toFixed(2)}R live` : 'Set SL & Target');
+
+          let ema10Badge = '';
+          if (Array.isArray(t.customOhlc) && t.customOhlc.length >= 10) {
+            const e10 = getLatestSeriesValue(computeEmaSeries(t.customOhlc, 10));
+            if (Number.isFinite(e10)) {
+              const above = t.exitPrice >= e10;
+              ema10Badge = `<span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold ${above ? 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-300' : 'bg-rose-500/15 text-rose-600 dark:text-rose-300'}">${above ? '> 10EMA' : '< 10EMA'}</span>`;
+            }
+          }
+
+          const hasR = t.rMultiple !== null;
+          const rVal = hasR ? t.rMultiple : 0;
+          const rBarPct = hasR ? Math.max(0, Math.min(100, ((rVal + 1) / 3) * 100)) : 33;
+          const rBarCol = rVal >= 2 ? 'bg-emerald-500' : (rVal >= 1.5 ? 'bg-sky-500' : (rVal >= 0 ? 'bg-emerald-400/80' : 'bg-rose-500'));
+
+          let actionBadge = 'HOLD ORIGINAL SL';
+          let actionBadgeCls = 'bg-slate-200/80 dark:bg-slate-800 text-slate-600 dark:text-slate-300';
+          if (!t.stopLoss) {
+            actionBadge = 'SET GTT STOP-LOSS';
+            actionBadgeCls = 'bg-rose-500/15 text-rose-600 dark:text-rose-300';
+          } else if (hasR && rVal >= 2.0) {
+            actionBadge = 'HIT +2R · BOOK 50% & TRAIL';
+            actionBadgeCls = 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300';
+          } else if (hasR && rVal >= 1.5 && !t.isRiskFree) {
+            actionBadge = 'HIT +1.5R · MOVE SL TO BE';
+            actionBadgeCls = 'bg-sky-500/15 text-sky-700 dark:text-sky-300';
+          } else if (t.isRiskFree) {
+            actionBadge = 'RISK-FREE · TRAIL SL';
+            actionBadgeCls = 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-300';
+          } else if (hasR && rVal <= -0.7) {
+            actionBadge = 'NEAR STOP-LOSS · RESPECT GTT';
+            actionBadgeCls = 'bg-rose-500/15 text-rose-600 dark:text-rose-300';
+          }
+
+          const showMoveBeBtn = !t.isRiskFree && hasR && rVal >= 1.5;
 
           return `
             <div class="rounded-xl border p-3.5 flex flex-col justify-between gap-2.5 ${isSel ? 'border-emerald-500/60 ring-2 ring-emerald-500/20 bg-emerald-500/[0.04]' : 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60'}">
@@ -2044,12 +1797,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <span class="font-mono text-sm font-bold">${escapeHtml(t.symbol)}</span>
                     <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-300">RUNNING</span>
                     ${eodBadge}
+                    ${ema10Badge}
                   </div>
                   <div class="text-[11px] text-slate-500 mt-0.5"><strong>${escapeHtml(t.setup)}</strong> · Bought ${formatDateTimeShort(t.buyTime)}</div>
                 </div>
                 <div class="text-right font-mono">
                   <div class="text-sm font-extrabold tabular-nums ${pnlCls}">${fmtMoney(t.netPnl, true)}</div>
-                  <div class="text-[11px] ${pnlCls}">${t.returnPct >= 0 ? '+' : ''}${t.returnPct.toFixed(2)}%</div>
+                  <div class="text-[11px] ${pnlCls}">${t.returnPct >= 0 ? '+' : ''}${t.returnPct.toFixed(2)}%${hasR ? ` · ${rVal >= 0 ? '+' : ''}${rVal.toFixed(2)}R` : ''}</div>
                 </div>
               </div>
 
@@ -2063,25 +1817,47 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                   <input type="number" step="0.05" value="${t.currentPrice}" data-ltp-id="${t.id}" class="inline-ltp-input w-full bg-amber-500/10 border border-amber-500/30 rounded px-1.5 py-0.5 font-mono font-bold text-xs" />
                 </div>
                 <div>
-                  <div class="text-[10px] text-slate-500 font-sans">SL / R:R</div>
-                  <div class="font-semibold text-rose-500">${t.stopLoss ? fmtPrice(t.stopLoss) : 'No SL'}</div>
-                  <div class="text-[10px] text-slate-400">${rrText}</div>
+                  <div class="text-[10px] text-slate-500 font-sans">SL / Active Risk</div>
+                  <div class="font-semibold ${t.isRiskFree ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${t.stopLoss ? fmtPrice(t.stopLoss) : 'No SL'}</div>
+                  <div class="text-[10px] text-slate-400">${t.isRiskFree ? '₹0 Risk-Free' : (t.riskAmount ? `1R: ${fmtMoney(t.riskAmount)}` : 'Set SL')}</div>
                 </div>
+              </div>
+
+              <!-- R-Multiple Milestone Tracker (Upgrade #2) -->
+              <div class="rounded-lg bg-white/80 dark:bg-slate-900/90 border border-slate-200/70 dark:border-slate-800 p-2 space-y-1.5">
+                <div class="flex items-center justify-between gap-2 text-[10px] font-mono">
+                  <span class="px-1.5 py-0.5 rounded font-bold ${actionBadgeCls}">${actionBadge}</span>
+                  <span class="font-bold ${hasR ? (rVal >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500') : 'text-slate-400'}">${hasR ? `${rVal >= 0 ? '+' : ''}${rVal.toFixed(2)}R` : 'Set SL for R'}</span>
+                </div>
+                <div class="relative h-2 rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                  <div class="absolute top-0 bottom-0 left-[33.3%] w-px bg-slate-400/70 z-10"></div>
+                  <div class="absolute top-0 bottom-0 left-[83.3%] w-px bg-sky-400/80 z-10"></div>
+                  <div class="h-full ${rBarCol} transition-all" style="width:${rBarPct}%"></div>
+                </div>
+                <div class="flex items-center justify-between text-[10px] font-mono text-slate-500">
+                  <span>-1R</span>
+                  <span>0R Cost</span>
+                  <span>1.5R: ${t.price15R ? fmtPrice(t.price15R) : '—'}</span>
+                  <span>2R: ${t.price2R ? fmtPrice(t.price2R) : '—'}</span>
+                </div>
+                ${showMoveBeBtn ? `<button data-action="move-be" data-id="${t.id}" class="running-action-btn w-full mt-1 py-1 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-[11px] font-bold">Move SL → Breakeven (${fmtPrice(t.beStopPrice)})</button>` : ''}
               </div>
 
               ${t.notes ? `<p class="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 italic">"${escapeHtml(t.notes)}"</p>` : ''}
 
-              <div class="flex items-center gap-1.5 pt-1">
-                <button data-action="chart" data-id="${t.id}" class="running-action-btn flex-1 py-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-[11px] font-semibold">Daily Chart</button>
-                <button data-action="edit" data-id="${t.id}" class="running-action-btn flex-1 py-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-[11px] font-semibold">Edit Basis</button>
-                <button data-action="sell" data-id="${t.id}" class="running-action-btn flex-1 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-semibold">Sell &amp; AI</button>
+              <div class="grid grid-cols-5 gap-1 pt-1">
+                <button data-action="chart" data-id="${t.id}" class="running-action-btn py-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-[11px] font-semibold">Chart</button>
+                <button data-action="edit" data-id="${t.id}" class="running-action-btn py-1.5 rounded-lg bg-slate-200/80 dark:bg-slate-800 hover:bg-slate-300/80 dark:hover:bg-slate-700 text-[11px] font-semibold">Edit</button>
+                <button data-action="partial" data-id="${t.id}" class="running-action-btn py-1.5 rounded-lg bg-emerald-600/15 hover:bg-emerald-600/25 border border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-[11px] font-semibold">Partial</button>
+                <button data-action="ai" data-id="${t.id}" class="running-action-btn py-1.5 rounded-lg bg-violet-600/15 hover:bg-violet-600/25 border border-violet-500/30 text-violet-700 dark:text-violet-300 text-[11px] font-bold">AI</button>
+                <button data-action="sell" data-id="${t.id}" class="running-action-btn py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-[11px] font-semibold">Sell</button>
               </div>
             </div>
           `;
         }).join('');
       }
 
-      /* ---------- CANVAS EXECUTION CHART ---------- */
+      /* ---------- CANVAS EXECUTION CHART (WITH UPGRADE #4 10/20 EMA) ---------- */
       function renderChartSelectorAndCanvas(stats) {
         const select = document.getElementById('chartTradeSelect');
         const sorted = [...stats.openTrades, ...[...stats.closedTrades].reverse()];
@@ -2101,6 +1877,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         singleBtn.className = `px-2.5 py-1 rounded-lg font-semibold ${state.chartScope === 'single' ? actCls : inactCls}`;
         tickerBtn.className = `px-2.5 py-1 rounded-lg font-semibold ${state.chartScope === 'ticker' ? actCls : inactCls}`;
 
+        const showEma10 = state.settings.showEma10 !== false;
+        const showEma20 = state.settings.showEma20 !== false;
+        const ema10Btn = document.getElementById('toggleEma10Btn');
+        const ema20Btn = document.getElementById('toggleEma20Btn');
+        if (ema10Btn) {
+          ema10Btn.className = `px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition ${showEma10 ? 'bg-cyan-500/15 border-cyan-500/40 text-cyan-700 dark:text-cyan-300' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`;
+        }
+        if (ema20Btn) {
+          ema20Btn.className = `px-2.5 py-1.5 rounded-xl border text-xs font-mono font-bold transition ${showEma20 ? 'bg-fuchsia-500/15 border-fuchsia-500/40 text-fuchsia-700 dark:text-fuchsia-300' : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400'}`;
+        }
+
         const a = sorted.find(t => t.id === state.activeTradeId) || sorted[0];
         const tradesOnChart = state.chartScope === 'ticker'
           ? sorted.filter(t => t.symbol === a.symbol).sort((x, y) => x.buyMs - y.buyMs)
@@ -2108,6 +1895,10 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         const hasCsv = state.chartScope === 'single' && Array.isArray(a.customOhlc) && a.customOhlc.length >= 2;
         const candles = hasCsv ? a.customOhlc : synthesizeCandlesForTrades(tradesOnChart);
+        const ema10 = computeEmaSeries(candles, 10);
+        const ema20 = computeEmaSeries(candles, 20);
+        const latestEma10 = getLatestSeriesValue(ema10);
+        const latestEma20 = getLatestSeriesValue(ema20);
 
         const badge = document.getElementById('chartDataSourceBadge');
         badge.textContent = hasCsv
@@ -2120,12 +1911,14 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           <span class="font-mono font-bold px-2 py-0.5 rounded-lg ${a.isOpen ? 'bg-amber-500/15 text-amber-700 dark:text-amber-300' : 'bg-rose-500/15 text-rose-700 dark:text-rose-300'}">${a.isOpen ? `LIVE LTP ${fmtPrice(a.exitPrice)}` : `SELL ${fmtPrice(a.exitPrice)} @ ${formatDateTimeShort(a.sellTime)}`}</span>
           ${a.stopLoss ? `<span class="font-mono px-2 py-0.5 rounded-lg bg-slate-200/70 dark:bg-slate-800">SL ${fmtPrice(a.stopLoss)} (1R: ${fmtMoney(a.riskAmount)})</span>` : ''}
           ${a.targetPrice ? `<span class="font-mono px-2 py-0.5 rounded-lg bg-sky-500/15 text-sky-700 dark:text-sky-300">TGT ${fmtPrice(a.targetPrice)}</span>` : ''}
+          ${showEma10 && Number.isFinite(latestEma10) ? `<span class="font-mono font-semibold px-2 py-0.5 rounded-lg bg-cyan-500/15 text-cyan-700 dark:text-cyan-300 border border-cyan-500/30">10 EMA ${fmtPrice(latestEma10)}</span>` : ''}
+          ${showEma20 && Number.isFinite(latestEma20) ? `<span class="font-mono font-semibold px-2 py-0.5 rounded-lg bg-fuchsia-500/15 text-fuchsia-700 dark:text-fuchsia-300 border border-fuchsia-500/30">20 EMA ${fmtPrice(latestEma20)}</span>` : ''}
           <span class="font-mono font-bold px-2 py-0.5 rounded-lg border ${pnlCls}">${a.isOpen ? 'Unrealized' : 'Net'} ${fmtMoney(a.netPnl, true)} (${a.returnPct >= 0 ? '+' : ''}${a.returnPct.toFixed(2)}%)</span>
           <span class="text-slate-500">Hold: <strong>${formatDuration(a.holdMs)}</strong></span>
         `;
 
         state.canvasState = {
-          candles, tradesOnChart,
+          candles, tradesOnChart, ema10, ema20,
           padding: { top: 26, right: 72, bottom: 32, left: 14 },
           hoverIdx: -1
         };
@@ -2154,7 +1947,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         const spanCheck = n >= 2 ? (cs.candles[n - 1].time - cs.candles[0].time) : 0;
         const isDaily = Boolean(primary && ((primary.isOpen && cs.tradesOnChart.length === 1) || (!primary.manualOhlc && primary.eodAsOf) || spanCheck > 7 * 86400000));
 
-        // Price domain
         let minP = Infinity, maxP = -Infinity;
         cs.candles.forEach(c => { if (c.low < minP) minP = c.low; if (c.high > maxP) maxP = c.high; });
         cs.tradesOnChart.forEach(t => {
@@ -2162,6 +1954,12 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             if (Number.isFinite(p) && p > 0) { if (p < minP) minP = p; if (p > maxP) maxP = p; }
           });
         });
+        if (state.settings.showEma10 !== false && Array.isArray(cs.ema10)) {
+          cs.ema10.forEach(v => { if (Number.isFinite(v)) { if (v < minP) minP = v; if (v > maxP) maxP = v; } });
+        }
+        if (state.settings.showEma20 !== false && Array.isArray(cs.ema20)) {
+          cs.ema20.forEach(v => { if (Number.isFinite(v)) { if (v < minP) minP = v; if (v > maxP) maxP = v; } });
+        }
         const margin = Math.max((maxP - minP) * 0.14, maxP * 0.015);
         minP = Math.max(0.01, minP - margin);
         maxP = maxP + margin;
@@ -2176,7 +1974,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         ctx.clearRect(0, 0, width, height);
 
-        // Horizontal grid & price axis
         ctx.strokeStyle = isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.14)';
         ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
         ctx.font = '11px JetBrains Mono, monospace';
@@ -2188,7 +1985,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           ctx.fillText(p.toFixed(1), width - pad.right + 6, y + 3);
         }
 
-        // Shaded hold window
         cs.tradesOnChart.forEach(t => {
           const bi = idxForTime(t.buyMs);
           const si = t.isOpen ? n - 1 : idxForTime(t.sellMs);
@@ -2197,7 +1993,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           ctx.fillRect(x1, pad.top, Math.max(4, x2 - x1), plotH);
         });
 
-        // Candlesticks
         const barW = Math.max(3, Math.min(14, (plotW / n) * 0.62));
         cs.candles.forEach((c, i) => {
           const x = xFor(i);
@@ -2212,7 +2007,27 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           ctx.fillRect(x - barW / 2, topY, barW, Math.max(1.5, botY - topY));
         });
 
-        // Reference dashed lines for primary trade
+        const drawEmaLine = (series, color) => {
+          if (!Array.isArray(series)) return;
+          ctx.save();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 1.8;
+          ctx.lineJoin = 'round';
+          ctx.beginPath();
+          let started = false;
+          series.forEach((val, i) => {
+            if (!Number.isFinite(val)) return;
+            const x = xFor(i), y = yFor(val);
+            if (!started) { ctx.moveTo(x, y); started = true; }
+            else ctx.lineTo(x, y);
+          });
+          if (started) ctx.stroke();
+          ctx.restore();
+        };
+
+        if (state.settings.showEma20 !== false) drawEmaLine(cs.ema20, '#d946ef');
+        if (state.settings.showEma10 !== false) drawEmaLine(cs.ema10, '#06b6d4');
+
         const drawHLine = (price, color, label) => {
           if (!Number.isFinite(price) || price <= 0) return;
           const y = yFor(price);
@@ -2235,24 +2050,22 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         if (!primary.isOpen) drawHLine(primary.exitPrice, '#f43f5e', `SELL ${primary.exitPrice.toFixed(0)}`);
         else drawHLine(primary.exitPrice, '#8b5cf6', `LTP ${primary.exitPrice.toFixed(0)}`);
 
-        // BUY / SELL arrow markers
         cs.tradesOnChart.forEach(t => {
           const bx = xFor(idxForTime(t.buyMs)), by = yFor(t.buyPrice);
           ctx.fillStyle = '#10b981';
           ctx.beginPath(); ctx.moveTo(bx, by + 6); ctx.lineTo(bx - 6, by + 16); ctx.lineTo(bx + 6, by + 16); ctx.closePath(); ctx.fill();
           ctx.font = 'bold 10px JetBrains Mono, monospace';
           ctx.textAlign = 'center';
-          ctx.fillText(`BUY`, bx, Math.min(height - pad.bottom - 4, by + 28));
+          ctx.fillText('BUY', bx, Math.min(height - pad.bottom - 4, by + 28));
 
           if (!t.isOpen) {
             const sx = xFor(idxForTime(t.sellMs)), sy = yFor(t.exitPrice);
             ctx.fillStyle = '#f43f5e';
             ctx.beginPath(); ctx.moveTo(sx, sy - 6); ctx.lineTo(sx - 6, sy - 16); ctx.lineTo(sx + 6, sy - 16); ctx.closePath(); ctx.fill();
-            ctx.fillText(`SELL`, sx, Math.max(pad.top + 10, sy - 20));
+            ctx.fillText('SELL', sx, Math.max(pad.top + 10, sy - 20));
           }
         });
 
-        // X-axis dates
         ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
         ctx.font = '10px JetBrains Mono, monospace';
         ctx.textAlign = 'center';
@@ -2265,7 +2078,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           ctx.fillText(lbl, xFor(i), height - 10);
         }
 
-        // Crosshair hover
         if (cs.hoverIdx >= 0 && cs.hoverIdx < n) {
           const hx = xFor(cs.hoverIdx);
           ctx.save();
@@ -2375,7 +2187,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           `;
         }
 
-        // Period Chart
         const isDark = document.documentElement.classList.contains('dark');
         const txtCol = isDark ? '#94a3b8' : '#475569';
         const gridCol = isDark ? 'rgba(148,163,184,0.1)' : 'rgba(100,116,139,0.12)';
@@ -2469,7 +2280,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       }
 
       function renderTradeTable(allTrades) {
-        // Populate setup filter dropdown
         const sf = document.getElementById('setupFilterSelect');
         const allSetups = Array.from(new Set([...BUY_STRATEGIES, ...allTrades.map(t => t.setup)]));
         sf.innerHTML = `<option value="all">All Strategies</option>` + allSetups.map(s => `<option value="${escapeHtml(s)}" ${state.filters.setup === s ? 'selected' : ''}>${escapeHtml(s)}</option>`).join('');
@@ -2528,7 +2338,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 <div class="text-[10px] text-slate-400 truncate">${escapeHtml(t.notes || 'Click Edit to add buy basis')}</div>
               </td>
               <td class="px-3.5 py-2.5 text-right whitespace-nowrap space-x-1">
-                ${!t.isOpen ? `<button data-tbl-act="diag" data-id="${t.id}" class="tbl-btn px-2 py-1 rounded-lg bg-violet-500/15 text-violet-700 dark:text-violet-300 font-semibold">AI</button>` : ''}
+                <button data-tbl-act="diag" data-id="${t.id}" class="tbl-btn px-2 py-1 rounded-lg bg-violet-500/15 text-violet-700 dark:text-violet-300 font-semibold">AI</button>
                 <button data-tbl-act="edit" data-id="${t.id}" class="tbl-btn px-2 py-1 rounded-lg bg-slate-200/80 dark:bg-slate-800 font-semibold">Edit</button>
                 <button data-tbl-act="delete" data-id="${t.id}" class="tbl-btn px-2 py-1 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400 font-semibold">Del</button>
               </td>
@@ -2537,18 +2347,32 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         }).join('');
       }
 
-      /* ---------- POST-SELL AI DIAGNOSTIC ---------- */
+      /* ---------- PER-TRADE AI DIAGNOSTIC (RUNNING & CLOSED · UPGRADE #5) ---------- */
+      function getOrderedDiagIds() {
+        const stats = computeAnalytics();
+        return [...stats.openTrades, ...[...stats.closedTrades].reverse()].map(t => t.id);
+      }
+
       function openSingleTradeDiagnostic(tradeId) {
         const raw = state.trades.find(t => t.id === tradeId);
         if (!raw) return;
         const t = enrichTrade(raw);
+        const stats = computeAnalytics();
+        const equity = Math.max(1000, stats.currentEquity);
         state.activeDiagTradeId = tradeId;
 
-        let score = 75;
+        const orderedIds = getOrderedDiagIds();
+        const curPos = orderedIds.indexOf(tradeId);
+        const prevBtn = document.getElementById('diagPrevBtn');
+        const nextBtn = document.getElementById('diagNextBtn');
+        if (prevBtn) prevBtn.disabled = curPos <= 0;
+        if (nextBtn) nextBtn.disabled = curPos < 0 || curPos >= orderedIds.length - 1;
+
+        let score = 78;
         const findings = [];
         const suggestions = [];
 
-        // 1. Entry Window Check (09:15–10:30 leak)
+        // 1. Entry Window Check
         if (t.timeWindow.includes('09:15')) {
           score -= 18;
           findings.push({ type: 'warn', title: 'Early Market-Open Entry (09:15–10:30)', msg: `Entered at ${formatDateTimeShort(t.buyTime)}. Opening volatility often produces false breakouts.` });
@@ -2558,30 +2382,99 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           findings.push({ type: 'good', title: `Disciplined Entry Window (${t.timeWindow})`, msg: `Avoided opening-bell whipsaws by entering at ${formatDateTimeShort(t.buyTime)}.` });
         }
 
-        // 2. Risk & Stop-Loss Check
-        const capRiskPct = t.riskAmount ? (t.riskAmount / state.settings.startingCapital) * 100 : null;
+        // 2. Position Size & Stop-Loss Band Check
+        const posPct = (t.capitalUsed / equity) * 100;
+        const slDistPct = t.stopLoss ? (Math.abs(t.buyPrice - t.stopLoss) / t.buyPrice) * 100 : null;
+        const capRiskPct = t.riskAmount ? (t.riskAmount / equity) * 100 : null;
+
         if (!t.stopLoss) {
-          score -= 15;
-          findings.push({ type: 'warn', title: 'No Initial Stop-Loss Logged', msg: 'Trading without a predefined stop-loss exposes capital to sudden drawdown spikes.' });
-          suggestions.push('Always place a Zerodha GTT Stop-Loss immediately after buying, capping max risk to ~0.5%–1% of capital (₹1,500–₹3,000).');
-        } else if (t.netPnl < 0 && t.rMultiple !== null && t.rMultiple < -1.25) {
           score -= 18;
-          findings.push({ type: 'warn', title: `Stop-Loss Slippage / Violation (${t.rMultiple.toFixed(2)}R)`, msg: `Loss of ${fmtMoney(t.netPnl)} exceeded planned 1R risk (${fmtMoney(t.riskAmount)}).` });
-          suggestions.push('Never widen or cancel a GTT Stop-Loss once placed.');
+          findings.push({ type: 'warn', title: 'No Stop-Loss Logged', msg: 'Holding without a predefined GTT stop-loss exposes capital to sudden gap-downs.' });
+          suggestions.push('Place a Zerodha GTT Stop-Loss immediately, keeping risk around 0.5% of equity (₹1,500 on ₹3L).');
         } else {
-          score += 8;
-          findings.push({ type: 'good', title: `Risk Defined (${capRiskPct ? capRiskPct.toFixed(2) + '% of capital' : 'SL Logged'})`, msg: `1R risk was ${fmtMoney(t.riskAmount)} at SL ${fmtPrice(t.stopLoss)}.` });
+          if (t.isOpen && !t.isRiskFree && slDistPct < 3.5) {
+            score -= 8;
+            findings.push({ type: 'info', title: `Tight Stop-Loss Distance (${slDistPct.toFixed(1)}%)`, msg: `SL ${fmtPrice(t.stopLoss)} is tighter than 3.5% — higher risk of normal intraday shakeout.` });
+          } else if (t.isOpen && !t.isRiskFree && slDistPct > 8.0) {
+            score -= 12;
+            findings.push({ type: 'warn', title: `Wide Stop-Loss Distance (${slDistPct.toFixed(1)}%)`, msg: `SL ${fmtPrice(t.stopLoss)} exceeds the 8% hard max stop band.` });
+            suggestions.push('Skip extended setups needing > 8% stops, or cut position size so 1R stays capped at 0.5% of equity.');
+          } else if (!t.isOpen && t.netPnl < 0 && t.rMultiple !== null && t.rMultiple < -1.25) {
+            score -= 18;
+            findings.push({ type: 'warn', title: `Stop-Loss Slippage / Violation (${t.rMultiple.toFixed(2)}R)`, msg: `Loss of ${fmtMoney(t.netPnl)} exceeded planned 1R risk (${fmtMoney(t.riskAmount)}).` });
+            suggestions.push('Never widen or cancel a GTT Stop-Loss once placed.');
+          } else {
+            score += 8;
+            findings.push({ type: 'good', title: `Risk Defined (${capRiskPct ? capRiskPct.toFixed(2) + '% equity' : 'SL Logged'})`, msg: `SL ${fmtPrice(t.stopLoss)}${t.isRiskFree ? ' (Risk-Free Breakeven+)' : ` · 1R Risk ${fmtMoney(t.riskAmount)} (${slDistPct.toFixed(1)}%)`}.` });
+          }
         }
 
-        // 3. Payoff / R-Multiple Check
-        if (t.rMultiple !== null) {
-          if (t.rMultiple >= 2) {
-            score += 14;
-            findings.push({ type: 'good', title: `Excellent Reward Capture (+${t.rMultiple.toFixed(2)}R)`, msg: `Captured ${fmtMoney(t.netPnl, true)} (${t.returnPct.toFixed(2)}%) — textbook swing payoff.` });
-          } else if (t.netPnl > 0 && t.rMultiple < 0.8) {
-            score -= 6;
-            findings.push({ type: 'info', title: `Early Profit Booking (+${t.rMultiple.toFixed(2)}R)`, msg: `Closed for a small +${t.rMultiple.toFixed(2)}R gain. Cutting winners under 1R lowers your long-term payoff ratio.` });
-            suggestions.push('Trail your stop using the 10 EMA or previous swing low to let winners reach 2R+.');
+        if (posPct > 15.5) {
+          score -= 8;
+          findings.push({ type: 'warn', title: `Oversized Allocation (${posPct.toFixed(1)}% of Equity)`, msg: `Capital deployed (${fmtMoney(t.capitalUsed)}) exceeded the 15% single-stock cap (${fmtMoney(equity * 0.15)}).` });
+          suggestions.push('Use the Pre-Trade Auto-Size Qty button to enforce the 15% single-stock cap.');
+        }
+
+        // 3. Running vs Closed Specific Diagnostics
+        if (t.isOpen) {
+          // Live 10 EMA check if daily candles exist
+          if (Array.isArray(t.customOhlc) && t.customOhlc.length >= 10) {
+            const e10 = getLatestSeriesValue(computeEmaSeries(t.customOhlc, 10));
+            if (Number.isFinite(e10)) {
+              const above = t.exitPrice >= e10;
+              findings.push({
+                type: above ? 'good' : 'warn',
+                title: above ? `Holding Above 10 EMA (${fmtPrice(e10)})` : `Below 10 EMA (${fmtPrice(e10)})`,
+                msg: above ? `LTP ${fmtPrice(t.exitPrice)} is trending cleanly above its 10-day EMA.` : `LTP ${fmtPrice(t.exitPrice)} has slipped under the 10-day EMA — review at 3:15 PM close.`
+              });
+            }
+          }
+
+          // Mechanical next step based on live R
+          if (t.rMultiple !== null) {
+            if (t.rMultiple >= 2) {
+              score += 10;
+              findings.push({ type: 'good', title: `Target Zone Reached (+${t.rMultiple.toFixed(2)}R)`, msg: `Live gain ${fmtMoney(t.netPnl, true)} passed your +2R milestone (${fmtPrice(t.price2R)}).` });
+              suggestions.push(`Book 50% (volatile) or 1/3 (bull) via Partial Book, set remaining SL to ${fmtPrice(t.beStopPrice)}, and trail the rest via 10 EMA daily closes.`);
+            } else if (t.rMultiple >= 1.5 && !t.isRiskFree) {
+              score += 6;
+              findings.push({ type: 'good', title: `Breakeven Trigger Reached (+${t.rMultiple.toFixed(2)}R)`, msg: `Passed +1.5R (${fmtPrice(t.price15R)}). Time to make this slot risk-free.` });
+              suggestions.push(`Move GTT Stop-Loss to Cost + 0.5% (${fmtPrice(t.beStopPrice)}) to drop open portfolio heat to ₹0.`);
+            } else if (t.rMultiple >= 0) {
+              findings.push({ type: 'info', title: `In Progress (+${t.rMultiple.toFixed(2)}R · Below +1.5R)`, msg: `Wait for ${fmtPrice(t.price15R)} before moving SL to breakeven so normal pullbacks don't shake you out.` });
+              suggestions.push('Leave your original GTT Stop-Loss untouched and check only once at 3:15 PM.');
+            } else {
+              findings.push({ type: 'warn', title: `Currently Red (${t.rMultiple.toFixed(2)}R)`, msg: `Unrealized ${fmtMoney(t.netPnl)} with SL at ${t.stopLoss ? fmtPrice(t.stopLoss) : 'NONE'}.` });
+              suggestions.push('Never average down into a red position. Let your GTT Stop-Loss protect capital automatically.');
+            }
+          }
+        } else {
+          // Closed trade reward capture
+          if (t.rMultiple !== null) {
+            if (t.rMultiple >= 2) {
+              score += 14;
+              findings.push({ type: 'good', title: `Excellent Reward Capture (+${t.rMultiple.toFixed(2)}R)`, msg: `Captured ${fmtMoney(t.netPnl, true)} (${t.returnPct.toFixed(2)}%) — textbook swing payoff.` });
+            } else if (t.netPnl > 0 && t.rMultiple < 0.8) {
+              score -= 6;
+              findings.push({ type: 'info', title: `Early Profit Booking (+${t.rMultiple.toFixed(2)}R)`, msg: `Closed for a small +${t.rMultiple.toFixed(2)}R gain. Cutting winners under 1R lowers your long-term payoff ratio.` });
+              suggestions.push('Trail your stop using the 10 EMA or previous swing low to let winners reach 2R+.');
+            }
+          }
+
+          // 5-Day Post-Exit Shakeout Check using EOD candles if available
+          if (Array.isArray(t.customOhlc) && t.customOhlc.length >= 6) {
+            const afterBars = t.customOhlc.filter(c => c.time > t.sellMs);
+            if (afterBars.length >= 3) {
+              const checkBar = afterBars[Math.min(4, afterBars.length - 1)];
+              const dir = t.side === 'Short' ? -1 : 1;
+              const movePct = ((checkBar.close - t.exitPrice) / t.exitPrice) * 100 * dir;
+              if (movePct <= -3) {
+                score += 4;
+                findings.push({ type: 'good', title: `5-Day Post-Exit Check: Smart Save (${movePct.toFixed(1)}%)`, msg: `Stock moved to ${fmtPrice(checkBar.close)} within 5 bars after exit — your exit protected capital.` });
+              } else if (movePct >= 5) {
+                findings.push({ type: 'info', title: `5-Day Post-Exit Check: Early Exit / Shakeout (+${movePct.toFixed(1)}%)`, msg: `Stock rallied to ${fmtPrice(checkBar.close)} within 5 bars after you sold. Check if your stop was tightened too early.` });
+              }
+            }
           }
         }
 
@@ -2596,7 +2489,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           suggestions.push(`Enforce a strict 15-trading-day cooldown on ${t.symbol} after any red exit.`);
         }
 
-        // 5. Plan & Notes Check
+        // 5. Plan & Emotion Check
         if (t.planFollowed === 'No' || t.emotion === 'FOMO' || t.emotion === 'Revenge') {
           score -= 12;
           findings.push({ type: 'warn', title: `Psychology / Plan Leak (${t.emotion})`, msg: `Marked Plan Followed: "${t.planFollowed}" with emotion "${t.emotion}".` });
@@ -2611,16 +2504,20 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         const grade = score >= 90 ? 'A+' : score >= 82 ? 'A' : score >= 72 ? 'B' : score >= 60 ? 'C' : 'D';
         const gradeCls = grade.startsWith('A') ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border-emerald-500/40' : grade === 'B' ? 'bg-sky-500/15 text-sky-600 dark:text-sky-300 border-sky-500/40' : 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border-rose-500/40';
 
-        document.getElementById('tradeDiagHeader').textContent = `Post-Sell AI Diagnostic · ${t.symbol}`;
-        document.getElementById('tradeDiagSubheader').textContent = `${t.setup} · Bought ${formatDateTimeShort(t.buyTime)} → Sold ${formatDateTimeShort(t.sellTime)}`;
+        document.getElementById('tradeDiagHeader').textContent = `${t.isOpen ? 'Live Running AI Audit' : 'Post-Sell AI Diagnostic'} · ${t.symbol} (${curPos + 1}/${orderedIds.length})`;
+        document.getElementById('tradeDiagSubheader').textContent = `${t.setup} · Bought ${formatDateTimeShort(t.buyTime)}${t.isOpen ? ` · Running (${formatDuration(t.holdMs)})` : ` → Sold ${formatDateTimeShort(t.sellTime)}`}`;
+
+        const quickChips = t.isOpen
+          ? ['Holding GTT SL patiently', 'Waiting for +1.5R BE', 'Trailing 10 EMA at 3:15 PM', 'Entered too early pre-10:30']
+          : ['Followed plan cleanly', 'Respected GTT Stop-Loss', 'Moved SL to BE too early', 'Chased FOMO entry'];
 
         document.getElementById('tradeDiagBody').innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-3 p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-3">
               <div class="w-12 h-12 rounded-2xl border-2 flex items-center justify-center font-mono text-xl font-black ${gradeCls}">${grade}</div>
               <div>
-                <div class="font-bold text-sm">Execution Score: ${score}/100</div>
-                <div class="text-slate-500">Hold: ${formatDuration(t.holdMs)} · R-Multiple: ${t.rMultiple !== null ? (t.rMultiple >= 0 ? '+' : '') + t.rMultiple.toFixed(2) + 'R' : 'N/A'}</div>
+                <div class="font-bold text-sm">${t.isOpen ? 'Live Execution Score' : 'Execution Score'}: ${score}/100</div>
+                <div class="text-slate-500">Hold: ${formatDuration(t.holdMs)} · R-Multiple: ${t.rMultiple !== null ? (t.rMultiple >= 0 ? '+' : '') + t.rMultiple.toFixed(2) + 'R' : 'N/A'} · Size: ${posPct.toFixed(1)}%</div>
               </div>
             </div>
             <div class="text-right font-mono">
@@ -2638,15 +2535,30 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           </div>
 
           <div class="p-3.5 rounded-xl border border-violet-500/30 bg-violet-500/[0.06] space-y-1.5">
-            <h4 class="font-bold text-violet-700 dark:text-violet-300">Actionable Suggestions for Your Next Trade</h4>
+            <h4 class="font-bold text-violet-700 dark:text-violet-300">${t.isOpen ? 'Next Mechanical Action' : 'Actionable Suggestions for Your Next Trade'}</h4>
             <ul class="list-disc pl-5 space-y-1 text-slate-700 dark:text-slate-200">${suggestions.map(s => `<li>${escapeHtml(s)}</li>`).join('')}</ul>
+          </div>
+
+          <div class="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/60 space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <h4 class="font-bold text-slate-900 dark:text-white">Trade Notes &amp; 1-Line Lesson</h4>
+              <span class="text-[10px] text-slate-400">Saved directly to journal</span>
+            </div>
+            <p class="text-[11px] text-slate-600 dark:text-slate-300 italic">${t.notes ? escapeHtml(t.notes) : 'No buy basis or lesson logged yet.'}</p>
+            <div class="flex flex-wrap gap-1.5">
+              ${quickChips.map(ch => `<button type="button" data-chip="${escapeHtml(ch)}" class="diag-chip-btn px-2 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 hover:bg-violet-500/20 text-[10px] font-semibold">+ ${escapeHtml(ch)}</button>`).join('')}
+            </div>
+            <div class="flex gap-2">
+              <input id="diagLessonInput" type="text" placeholder="Type a 1-line lesson to append to this trade..." class="flex-1 px-3 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs" />
+              <button id="saveDiagLessonBtn" type="button" class="px-3.5 py-1.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold shrink-0">Save Lesson</button>
+            </div>
           </div>
         `;
 
         state.activeDiagText = [
-          `=== POST-SELL AI DIAGNOSTIC: ${t.symbol} (Grade ${grade}, ${score}/100) ===`,
-          `Buy: ${fmtPrice(t.buyPrice)} @ ${formatDateTimeShort(t.buyTime)} -> Sell: ${fmtPrice(t.exitPrice)} @ ${formatDateTimeShort(t.sellTime)} | Qty: ${t.qty}`,
-          `Net P&L: ${fmtMoney(t.netPnl, true)} (${t.returnPct.toFixed(2)}%) | R: ${t.rMultiple !== null ? t.rMultiple.toFixed(2) + 'R' : 'N/A'} | Strategy: ${t.setup}`,
+          `=== ${t.isOpen ? 'LIVE RUNNING AI AUDIT' : 'POST-SELL AI DIAGNOSTIC'}: ${t.symbol} (Grade ${grade}, ${score}/100) ===`,
+          `Buy: ${fmtPrice(t.buyPrice)} @ ${formatDateTimeShort(t.buyTime)} -> ${t.isOpen ? 'LTP' : 'Sell'}: ${fmtPrice(t.exitPrice)} | Qty: ${t.qty} (${posPct.toFixed(1)}% cap)`,
+          `${t.isOpen ? 'Unrealized' : 'Net'} P&L: ${fmtMoney(t.netPnl, true)} (${t.returnPct.toFixed(2)}%) | R: ${t.rMultiple !== null ? t.rMultiple.toFixed(2) + 'R' : 'N/A'} | Strategy: ${t.setup}`,
           'Findings:', ...findings.map(f => `- ${f.title}: ${f.msg}`),
           'Suggestions:', ...suggestions.map(s => `- ${s}`)
         ].join('\n');
@@ -2654,10 +2566,12 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         document.getElementById('tradeDiagModal').classList.remove('hidden');
       }
 
-      /* ---------- FULL PORTFOLIO AI REVIEW ---------- */
+      /* ---------- FULL PORTFOLIO AI REVIEW (INCLUDES RUNNING TRADES & HEAT) ---------- */
       function openFullAiReviewModal() {
         const s = computeAnalytics();
         const flags = [];
+        if (s.heatPct > (state.settings.maxHeatPct || 3)) flags.push(`[WARN] Portfolio Heat (${s.heatPct.toFixed(2)}%) exceeds 3% cap (${fmtMoney(s.openRisk)} at risk across ${s.uniqueOpenSymbols} stocks).`);
+        if (s.deployedPct > 80) flags.push(`[WARN] High Capital Deployment (${s.deployedPct.toFixed(1)}% deployed · only ${s.cashBufferPct.toFixed(1)}% cash buffer).`);
         if (s.totalTrades >= 3 && s.payoffRatio < 1) flags.push(`[WARN] Inverted Payoff (${s.payoffRatio.toFixed(2)}:1): Avg loss (${fmtMoney(s.avgLoss)}) exceeds avg win (${fmtMoney(s.avgWin)}).`);
         const openWinTrades = s.closedTrades.filter(t => t.timeWindow.includes('09:15'));
         const openWinPnl = openWinTrades.reduce((a, t) => a + t.netPnl, 0);
@@ -2670,12 +2584,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           return `<div class="px-3 py-2 rounded-xl border text-[11px] font-semibold ${isWarn ? 'bg-rose-500/10 border-rose-500/30 text-rose-700 dark:text-rose-300' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-300'}">${escapeHtml(f)}</div>`;
         }).join('');
 
+        const runningLines = s.openTrades.length
+          ? s.openTrades.map(t => `${t.symbol} | Buy ${fmtPrice(t.buyPrice)} @ ${formatDateTimeShort(t.buyTime)} | Qty ${t.qty} (${fmtMoney(t.capitalUsed)}) | LTP ${fmtPrice(t.exitPrice)} | SL ${t.stopLoss ? fmtPrice(t.stopLoss) : 'NONE'} | Active Risk ${fmtMoney(t.activeRisk)} | Live ${fmtMoney(t.netPnl, true)} (${t.rMultiple !== null ? (t.rMultiple >= 0 ? '+' : '') + t.rMultiple.toFixed(2) + 'R' : 'N/A'}) | ${t.setup}`)
+          : ['None'];
+
         const lines = [
           'Please review my TradePulse trading journal summary below and give me actionable rules to improve.',
           '',
           '=== TRADEPULSE PERFORMANCE SUMMARY ===',
           `Capital: Start ${fmtMoney(s.startCap)} -> Current ${fmtMoney(s.currentEquity)} (${s.returnPct >= 0 ? '+' : ''}${s.returnPct.toFixed(2)}%)`,
-          `Running Open Trades: ${s.openTrades.length} (Unrealized ${fmtMoney(s.unrealizedPnl, true)})`,
+          `Market Regime: ${(state.settings.marketRegime || 'yellow').toUpperCase()} | Deployed: ${fmtMoney(s.deployedCapital)} (${s.deployedPct.toFixed(1)}%) | Cash Buffer: ${fmtMoney(s.cashBuffer)} (${s.cashBufferPct.toFixed(1)}%)`,
+          `Portfolio Heat: ${fmtMoney(s.openRisk)} (${s.heatPct.toFixed(2)}% of equity) across ${s.uniqueOpenSymbols} stock(s) | Unrealized: ${fmtMoney(s.unrealizedPnl, true)}`,
           `Closed Trades: ${s.totalTrades} (${s.wins.length}W / ${s.losses.length}L) | Win Rate: ${s.winRate.toFixed(1)}%`,
           `Payoff Ratio: ${s.payoffRatio.toFixed(2)} : 1 | Avg Win: ${fmtMoney(s.avgWin, true)} | Avg Loss: ${fmtMoney(-s.avgLoss)}`,
           `Net P&L: ${fmtMoney(s.netPnl, true)} | Profit Factor: ${s.profitFactor.toFixed(2)} | Expectancy: ${s.expectancyR.toFixed(2)}R | Max DD: ${s.maxDdPct.toFixed(2)}%`,
@@ -2683,8 +2602,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           '--- AUTO-DETECTED FLAGS ---',
           ...flags,
           '',
+          '--- CURRENT RUNNING TRADES ---',
+          ...runningLines,
+          '',
           '--- RECENT CLOSED TRADES ---',
-          ...s.closedTrades.slice(-15).reverse().map(t => `${t.symbol} | Buy ${fmtPrice(t.buyPrice)} @ ${formatDateTimeShort(t.buyTime)} -> Sell ${fmtPrice(t.exitPrice)} @ ${formatDateTimeShort(t.sellTime)} | Qty ${t.qty} | Net ${fmtMoney(t.netPnl, true)} | ${t.setup}`)
+          ...(s.closedTrades.length
+            ? s.closedTrades.slice(-15).reverse().map(t => `${t.symbol} | Buy ${fmtPrice(t.buyPrice)} @ ${formatDateTimeShort(t.buyTime)} -> Sell ${fmtPrice(t.exitPrice)} @ ${formatDateTimeShort(t.sellTime)} | Qty ${t.qty} | Net ${fmtMoney(t.netPnl, true)} | ${t.setup}`)
+            : ['None'])
         ];
         document.getElementById('aiReviewTextarea').value = lines.join('\n');
         document.getElementById('aiReviewModal').classList.remove('hidden');
@@ -2721,7 +2645,6 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           throw new Error('Missing required Zerodha columns (symbol, trade_type, quantity, price).');
         }
 
-        // Merge partial fills sharing the same order_id + symbol + type
         const mergedMap = new Map();
         for (let r = 1; r < rawLines.length; r++) {
           const cols = parseCsvLine(rawLines[r]);
@@ -2768,7 +2691,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         const matchedClosed = [];
         const newOpenLots = [];
-        const closedExistingIds = new Map(); // id -> remaining qty
+        const closedExistingIds = new Map();
 
         fills.forEach(f => {
           if (mode === 'append' && existingKeys.has(f.orderKey)) return;
@@ -2970,15 +2893,15 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
       function downloadDeployableIndexHtml() {
         const clone = document.documentElement.cloneNode(true);
-        // Remove only runtime-injected Tailwind style tags while preserving #appCustomStyles
+        clone.querySelectorAll('[data-bard-client-injected="true"]').forEach(el => el.remove());
         clone.querySelectorAll('head style').forEach(s => {
           if (s.id !== 'appCustomStyles') s.remove();
         });
-        ['tradeModal', 'ohlcModal', 'confirmModal', 'zerodhaModal', 'aiReviewModal', 'tradeDiagModal', 'githubSyncModal'].forEach(id => {
+        ['tradeModal', 'partialModal', 'ohlcModal', 'confirmModal', 'zerodhaModal', 'aiReviewModal', 'tradeDiagModal', 'githubSyncModal'].forEach(id => {
           const m = clone.querySelector(`#${id}`);
           if (m && !m.classList.contains('hidden')) m.classList.add('hidden');
         });
-        ['toastContainer', 'kpiGrid', 'runningTradesGrid', 'tradeTableBody', 'periodTableBody', 'periodTableFoot', 'periodSummaryGrid', 'chartTradeSelect', 'chartExecutionStrip'].forEach(id => {
+        ['toastContainer', 'kpiGrid', 'portfolioHeatMetrics', 'aiCoachMetricsGrid', 'aiCoachInsightsBox', 'runningTradesGrid', 'tradeTableBody', 'periodTableBody', 'periodTableFoot', 'periodSummaryGrid', 'chartTradeSelect', 'chartExecutionStrip'].forEach(id => {
           const el = clone.querySelector(`#${id}`);
           if (el) el.innerHTML = '';
         });
@@ -2986,11 +2909,50 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         showToast('Downloaded clean index.html — upload it directly to your GitHub repo!', 'success');
       }
 
-      /* ---------- TRADE MODAL ---------- */
+      /* ---------- TRADE MODAL & UPGRADE #3 RISK SIZER + GUARDS ---------- */
       function populateStrategySelects() {
         const opts = BUY_STRATEGIES.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
         document.getElementById('setupInput').innerHTML = opts;
         document.getElementById('zerodhaDefaultSetup').innerHTML = opts;
+      }
+
+      function autoSizeTradeQuantity(slPctOverride = null) {
+        const bp = parseFloat(document.getElementById('buyPriceInput').value);
+        if (!Number.isFinite(bp) || bp <= 0) {
+          showToast('Enter a valid Buy Price first.', 'error');
+          return;
+        }
+        const side = document.getElementById('sideInput').value;
+        const dir = side === 'Short' ? -1 : 1;
+
+        let sl = parseFloat(document.getElementById('stopLossInput').value);
+        if (slPctOverride) {
+          sl = +(bp * (1 - dir * (slPctOverride / 100))).toFixed(2);
+          document.getElementById('stopLossInput').value = sl;
+          const rDist = Math.abs(bp - sl);
+          document.getElementById('targetPriceInput').value = +(bp + dir * rDist * 2).toFixed(2);
+        }
+        if (!Number.isFinite(sl) || sl <= 0 || Math.abs(bp - sl) < 0.01) {
+          showToast('Set a Stop-Loss (or click a Quick SL % button).', 'error');
+          return;
+        }
+
+        const stats = computeAnalytics();
+        const equity = Math.max(1000, stats.currentEquity);
+        const riskPct = parseFloat(document.getElementById('riskPctSelect').value) || 0.5;
+        const riskBudget = equity * (riskPct / 100);
+        const maxPosCap = equity * 0.15;
+        const riskPerShare = Math.abs(bp - sl);
+        const qtyByRisk = Math.floor(riskBudget / riskPerShare);
+        const qtyByCap = Math.floor(maxPosCap / bp);
+        const qty = Math.max(1, Math.min(qtyByRisk, qtyByCap));
+
+        document.getElementById('qtyInput').value = qty;
+        if (!document.getElementById('currentPriceInput').value) {
+          document.getElementById('currentPriceInput').value = bp;
+        }
+        updateLiveModalPreview();
+        showToast(`Sized to ${qty} qty (${fmtMoney(qty * bp)} · Risk ${fmtMoney(qty * riskPerShare)})`, 'success');
       }
 
       function toggleTradeStatusFields() {
@@ -3006,6 +2968,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
       }
 
       function updateLiveModalPreview() {
+        const stats = computeAnalytics();
+        const equity = Math.max(1000, stats.currentEquity);
+        const existingId = document.getElementById('tradeIdInput').value;
+        const sym = (document.getElementById('symbolInput').value || '').trim().toUpperCase().replace(/-EQ$/, '');
+        const buyTimeStr = document.getElementById('buyTimeInput').value;
         const bp = parseFloat(document.getElementById('buyPriceInput').value) || 0;
         const qty = parseInt(document.getElementById('qtyInput').value, 10) || 0;
         const sl = parseFloat(document.getElementById('stopLossInput').value) || 0;
@@ -3015,16 +2982,74 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         const fees = parseFloat(document.getElementById('feesInput').value) || 0;
         const dir = document.getElementById('sideInput').value === 'Short' ? -1 : 1;
 
+        const posVal = bp * qty;
+        const posPct = equity > 0 ? (posVal / equity) * 100 : 0;
         const risk = sl > 0 && bp > 0 ? Math.abs(bp - sl) * qty : 0;
+        const riskPct = equity > 0 ? (risk / equity) * 100 : 0;
+        const slPct = sl > 0 && bp > 0 ? (Math.abs(bp - sl) / bp) * 100 : 0;
         const net = (ep - bp) * qty * dir - (isClosed ? fees : 0);
         const rr = risk > 0 ? (isClosed ? `${(net / risk).toFixed(2)}R` : (tgt > 0 ? `1 : ${(((tgt - bp) * dir) / Math.abs(bp - sl)).toFixed(2)}` : '—')) : 'Set SL';
 
+        // Projected portfolio heat if saving an open trade
+        const prevOpen = existingId ? stats.openTrades.find(t => t.id === existingId) : null;
+        const baseOpenRisk = stats.openRisk - (prevOpen ? prevOpen.activeRisk : 0);
+        const baseDeployed = stats.deployedCapital - (prevOpen ? prevOpen.capitalUsed : 0);
+        const newTradeActiveRisk = !isClosed ? (sl > 0 ? Math.max(0, (bp - sl) * dir * qty) : posVal * 0.05) : 0;
+        const projHeatPct = ((baseOpenRisk + newTradeActiveRisk) / equity) * 100;
+        const projDeployPct = ((baseDeployed + (!isClosed ? posVal : 0)) / equity) * 100;
+
         document.getElementById('liveCalcPreview').innerHTML = `
-          <div><div class="text-slate-500">Position Value</div><div class="font-bold">${fmtMoney(bp * qty)}</div></div>
-          <div><div class="text-slate-500">1R Risk Amount</div><div class="font-bold text-amber-600 dark:text-amber-400">${risk ? fmtMoney(risk) : 'No SL'}</div></div>
+          <div><div class="text-slate-500">Position (${posPct.toFixed(1)}%)</div><div class="font-bold">${fmtMoney(posVal)}</div></div>
+          <div><div class="text-slate-500">1R Risk (${riskPct.toFixed(2)}%)</div><div class="font-bold text-amber-600 dark:text-amber-400">${risk ? `${fmtMoney(risk)} (${slPct.toFixed(1)}%)` : 'No SL'}</div></div>
           <div><div class="text-slate-500">${isClosed ? 'Realized R' : 'Planned R:R'}</div><div class="font-bold text-sky-600 dark:text-sky-400">${rr}</div></div>
-          <div><div class="text-slate-500">${isClosed ? 'Est. Net P&L' : 'Live Unrealized'}</div><div class="font-bold ${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">${fmtMoney(net, true)}</div></div>
+          <div><div class="text-slate-500">${isClosed ? 'Est. Net P&L' : 'Proj. Heat'}</div><div class="font-bold ${isClosed ? (net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400') : (projHeatPct > 3 ? 'text-rose-500' : 'text-emerald-600 dark:text-emerald-400')}">${isClosed ? fmtMoney(net, true) : `${projHeatPct.toFixed(2)}% / 3%`}</div></div>
         `;
+
+        // Pre-trade discipline guards
+        const alerts = [];
+        if (buyTimeStr) {
+          const bd = new Date(buyTimeStr);
+          if (!isNaN(bd.getTime())) {
+            const mins = bd.getHours() * 60 + bd.getMinutes();
+            if (mins >= 555 && mins < 630) {
+              alerts.push({ sev: 'warn', text: 'Pre-10:30 AM Entry Alert: Opening hour (09:15–10:30) is historically your biggest leak. Confirm candle strength after 10:30 AM.' });
+            }
+          }
+        }
+        if (sym) {
+          const buyMs = toMs(buyTimeStr);
+          const recentLoss = stats.closedTrades.find(x => x.id !== existingId && x.symbol === sym && x.netPnl < 0 && x.sellMs <= buyMs && (buyMs - x.sellMs) <= 15 * 86400000);
+          if (recentLoss) {
+            const daysAgo = Math.max(0, Math.round((buyMs - recentLoss.sellMs) / 86400000));
+            alerts.push({ sev: 'danger', text: `15-Day Cooldown Alert: You closed a loss on ${sym} (${fmtMoney(recentLoss.netPnl)}) just ${daysAgo} day(s) ago.` });
+          }
+        }
+        if (sl > 0 && bp > 0) {
+          if (slPct < 3.5) alerts.push({ sev: 'warn', text: `Tight Stop-Loss (${slPct.toFixed(1)}%): Below 3.5% risks intraday shakeouts on NSE mid/smallcaps.` });
+          else if (slPct > 8.0) alerts.push({ sev: 'danger', text: `Wide Stop-Loss (${slPct.toFixed(1)}%): Above 8% hard max — stock may be too extended.` });
+        }
+        if (posPct > 15.5) alerts.push({ sev: 'warn', text: `Oversized Position (${posPct.toFixed(1)}% of equity): Exceeds your 15% (${fmtMoney(equity * 0.15)}) cap.` });
+        if (riskPct > 0.8) alerts.push({ sev: 'danger', text: `High Trade Risk (${riskPct.toFixed(2)}%): Exceeds 0.5%–0.75% target — click Auto-Size Qty.` });
+        if (!isClosed && projHeatPct > (state.settings.maxHeatPct || 3)) {
+          alerts.push({ sev: 'danger', text: `Projected Portfolio Heat hits ${projHeatPct.toFixed(2)}% (above 3% cap).` });
+        }
+        if (!isClosed && projDeployPct > 85) {
+          alerts.push({ sev: 'warn', text: `Projected Deployment hits ${projDeployPct.toFixed(1)}% — leaves minimal cash buffer.` });
+        }
+        if (!isClosed && state.settings.marketRegime === 'red') {
+          alerts.push({ sev: 'danger', text: 'Market Regime is RED: Playbook recommends sitting in cash and avoiding fresh longs.' });
+        }
+
+        const box = document.getElementById('disciplineGuardsBox');
+        if (!alerts.length) {
+          box.innerHTML = bp > 0 && sl > 0 && qty > 0
+            ? `<div class="px-3 py-2 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-[11px] font-semibold">✓ All Pre-Trade Discipline Checks Passed (SL ${slPct.toFixed(1)}% · Risk ${riskPct.toFixed(2)}% · Proj. Heat ${projHeatPct.toFixed(2)}%)</div>`
+            : '';
+        } else {
+          box.innerHTML = alerts.map(a => `
+            <div class="px-3 py-2 rounded-xl border text-[11px] font-semibold ${a.sev === 'danger' ? 'border-rose-500/40 bg-rose-500/10 text-rose-700 dark:text-rose-300' : 'border-amber-500/40 bg-amber-500/10 text-amber-700 dark:text-amber-300'}">${a.sev === 'danger' ? '⛔' : '⚠'} ${escapeHtml(a.text)}</div>
+          `).join('');
+        }
       }
 
       function openTradeModal(trade = null, forceStatus = null) {
@@ -3054,6 +3079,48 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         toggleTradeStatusFields();
         document.getElementById('tradeModal').classList.remove('hidden');
+      }
+
+      /* ---------- UPGRADE #2: PARTIAL PROFIT BOOKING MODAL ---------- */
+      function openPartialModal(tradeId) {
+        const raw = state.trades.find(t => t.id === tradeId && t.status === 'open');
+        if (!raw) return;
+        if (raw.qty < 2) {
+          showToast('Only 1 share left — use Sell to close the full trade.', 'info');
+          openTradeModal(raw, 'closed');
+          return;
+        }
+        const t = enrichTrade(raw);
+        document.getElementById('partialTradeIdInput').value = t.id;
+        document.getElementById('partialModalTitle').textContent = `Partial Profit Book · ${t.symbol}`;
+        document.getElementById('partialModalSub').textContent = `Holding ${t.qty} qty @ ${fmtPrice(t.buyPrice)} · Live LTP ${fmtPrice(t.exitPrice)}`;
+        document.getElementById('partialQtyInput').max = t.qty - 1;
+        document.getElementById('partialQtyInput').value = Math.max(1, Math.floor(t.qty * 0.5));
+        document.getElementById('partialPriceInput').value = t.exitPrice;
+        document.getElementById('partialTimeInput').value = toLocalInputVal();
+        document.getElementById('partialFeesInput').value = 25;
+        document.getElementById('partialMoveBeCheckbox').checked = true;
+        updatePartialPreview();
+        document.getElementById('partialModal').classList.remove('hidden');
+      }
+
+      function updatePartialPreview() {
+        const id = document.getElementById('partialTradeIdInput').value;
+        const raw = state.trades.find(t => t.id === id);
+        if (!raw) return;
+        const t = enrichTrade(raw);
+        const sellQty = Math.min(t.qty - 1, Math.max(1, parseInt(document.getElementById('partialQtyInput').value, 10) || 1));
+        const sellPrice = parseFloat(document.getElementById('partialPriceInput').value) || t.exitPrice;
+        const fees = parseFloat(document.getElementById('partialFeesInput').value) || 0;
+        const dir = t.side === 'Short' ? -1 : 1;
+        const net = (sellPrice - t.buyPrice) * sellQty * dir - fees;
+        const remQty = t.qty - sellQty;
+        const moveBe = document.getElementById('partialMoveBeCheckbox').checked;
+
+        document.getElementById('partialPreviewBox').innerHTML = `
+          <div>Booking: <strong>${sellQty} qty</strong> @ ${fmtPrice(sellPrice)} → Realized Net <strong class="${net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-500'}">${fmtMoney(net, true)}</strong></div>
+          <div>Remaining Running: <strong>${remQty} qty</strong> · Stop-Loss: <strong>${moveBe ? `${fmtPrice(t.beStopPrice)} (Breakeven +0.5%)` : (t.stopLoss ? fmtPrice(t.stopLoss) : 'Unchanged')}</strong></div>
+        `;
       }
 
       /* ---------- OHLC CSV PARSER ---------- */
@@ -3094,6 +3161,15 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           applyThemeAndHeader(); saveState(); renderAll();
         });
 
+        // Market Regime toggle (Upgrade #1)
+        document.querySelectorAll('.regime-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.settings.marketRegime = btn.dataset.regime;
+            saveState(); renderAll();
+            showToast(`Market Regime set to ${btn.dataset.regime.toUpperCase()}`, 'info');
+          });
+        });
+
         // Running trade inline LTP & action buttons
         document.getElementById('runningTradesGrid').addEventListener('change', e => {
           const inp = e.target.closest('.inline-ltp-input');
@@ -3112,17 +3188,82 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             document.getElementById('chartSection').scrollIntoView({ behavior: 'smooth', block: 'center' });
           } else if (btn.dataset.action === 'edit') {
             openTradeModal(tr);
+          } else if (btn.dataset.action === 'partial') {
+            openPartialModal(tr.id);
+          } else if (btn.dataset.action === 'move-be') {
+            const enriched = enrichTrade(tr);
+            if (!tr.initialStopLoss && tr.stopLoss) tr.initialStopLoss = tr.stopLoss;
+            tr.stopLoss = enriched.beStopPrice;
+            saveState(); renderAll();
+            showToast(`${tr.symbol} Stop-Loss moved to Breakeven (${fmtPrice(tr.stopLoss)}) — trade is now risk-free!`, 'success');
+          } else if (btn.dataset.action === 'ai') {
+            openSingleTradeDiagnostic(tr.id);
           } else if (btn.dataset.action === 'sell') {
             openTradeModal(tr, 'closed');
           }
         });
 
-        // Chart controls & canvas hover
+        // AI Performance Coach header buttons (Upgrade #5)
+        document.getElementById('auditWeakestTradeBtn').addEventListener('click', () => {
+          const stats = computeAnalytics();
+          const pool = stats.openTrades.length ? stats.openTrades : stats.closedTrades;
+          if (!pool.length) { showToast('Log a trade first to audit.', 'info'); return; }
+          const weakest = [...pool].sort((a, b) => (a.rMultiple ?? a.returnPct) - (b.rMultiple ?? b.returnPct))[0];
+          openSingleTradeDiagnostic(weakest.id);
+        });
+        document.getElementById('coachCopySummaryBtn').addEventListener('click', () => {
+          openFullAiReviewModal();
+          copyTextToClipboard(document.getElementById('aiReviewTextarea').value);
+          showToast('Opened & copied full AI Review summary!', 'success');
+        });
+
+        // Film-review Prev/Next & 1-Line Lesson Saver inside Diagnostic Modal (Upgrade #5)
+        document.getElementById('diagPrevBtn').addEventListener('click', () => {
+          const ids = getOrderedDiagIds();
+          const idx = ids.indexOf(state.activeDiagTradeId);
+          if (idx > 0) openSingleTradeDiagnostic(ids[idx - 1]);
+        });
+        document.getElementById('diagNextBtn').addEventListener('click', () => {
+          const ids = getOrderedDiagIds();
+          const idx = ids.indexOf(state.activeDiagTradeId);
+          if (idx >= 0 && idx < ids.length - 1) openSingleTradeDiagnostic(ids[idx + 1]);
+        });
+        document.getElementById('tradeDiagBody').addEventListener('click', e => {
+          const chip = e.target.closest('.diag-chip-btn');
+          if (chip) {
+            const inp = document.getElementById('diagLessonInput');
+            if (inp) { inp.value = chip.dataset.chip; inp.focus(); }
+            return;
+          }
+          if (e.target.closest('#saveDiagLessonBtn')) {
+            const inp = document.getElementById('diagLessonInput');
+            const lesson = (inp ? inp.value : '').trim();
+            if (!lesson) { showToast('Type or pick a 1-line lesson first.', 'info'); return; }
+            const tr = state.trades.find(t => t.id === state.activeDiagTradeId);
+            if (!tr) return;
+            tr.notes = tr.notes ? `${tr.notes} · [Lesson: ${lesson}]` : `[Lesson: ${lesson}]`;
+            saveState();
+            renderAll();
+            openSingleTradeDiagnostic(tr.id);
+            showToast(`Saved lesson to ${tr.symbol}!`, 'success');
+          }
+        });
+
+        // Chart controls, 10/20 EMA toggles & Merge Lots (Upgrade #4)
         document.getElementById('chartTradeSelect').addEventListener('change', e => {
           state.activeTradeId = e.target.value; renderAll();
         });
         document.getElementById('scopeSingleBtn').addEventListener('click', () => { state.chartScope = 'single'; renderAll(); });
         document.getElementById('scopeTickerBtn').addEventListener('click', () => { state.chartScope = 'ticker'; renderAll(); });
+        document.getElementById('toggleEma10Btn').addEventListener('click', () => {
+          state.settings.showEma10 = state.settings.showEma10 === false;
+          saveState(); renderChartSelectorAndCanvas(computeAnalytics());
+        });
+        document.getElementById('toggleEma20Btn').addEventListener('click', () => {
+          state.settings.showEma20 = state.settings.showEma20 === false;
+          saveState(); renderChartSelectorAndCanvas(computeAnalytics());
+        });
+        document.getElementById('mergeOpenLotsBtn').addEventListener('click', mergeDuplicateOpenLots);
         window.addEventListener('resize', () => drawExecutionCanvas());
 
         const canvas = document.getElementById('executionCanvas');
@@ -3137,7 +3278,12 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           cs.hoverIdx = idx;
           drawExecutionCanvas();
           const c = cs.candles[idx];
-          tooltip.innerHTML = `<div class="text-sky-300 font-bold">${formatDateTimeShort(new Date(c.time).toISOString())}</div><div>O: ${c.open} · H: ${c.high}</div><div>L: ${c.low} · C: ${c.close}</div>`;
+          const e10 = state.settings.showEma10 !== false && cs.ema10 ? cs.ema10[idx] : null;
+          const e20 = state.settings.showEma20 !== false && cs.ema20 ? cs.ema20[idx] : null;
+          const emaRow = (Number.isFinite(e10) || Number.isFinite(e20))
+            ? `<div class="pt-0.5 border-t border-slate-700/80">${Number.isFinite(e10) ? `<span class="text-cyan-400">10E: ${e10.toFixed(2)}</span>` : ''}${Number.isFinite(e10) && Number.isFinite(e20) ? ' · ' : ''}${Number.isFinite(e20) ? `<span class="text-fuchsia-400">20E: ${e20.toFixed(2)}</span>` : ''}</div>`
+            : '';
+          tooltip.innerHTML = `<div class="text-sky-300 font-bold">${formatDateTimeShort(new Date(c.time).toISOString())}</div><div>O: ${c.open} · H: ${c.high}</div><div>L: ${c.low} · C: ${c.close}</div>${emaRow}`;
           tooltip.classList.remove('hidden');
         });
         canvas.addEventListener('mouseleave', () => {
@@ -3180,14 +3326,19 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           }
         });
 
-        // Trade Modal
+        // Trade Modal & Upgrade #3 Risk Sizer
         document.getElementById('openAddTradeBtn').addEventListener('click', () => openTradeModal(null, 'open'));
         document.getElementById('openNewRunningTradeBtn').addEventListener('click', () => openTradeModal(null, 'open'));
         document.getElementById('closeTradeModalBtn').addEventListener('click', () => document.getElementById('tradeModal').classList.add('hidden'));
         document.getElementById('cancelTradeModalBtn').addEventListener('click', () => document.getElementById('tradeModal').classList.add('hidden'));
         document.getElementById('statusInput').addEventListener('change', toggleTradeStatusFields);
-        ['buyPriceInput','qtyInput','stopLossInput','targetPriceInput','currentPriceInput','sellPriceInput','feesInput','sideInput'].forEach(id => {
+        document.getElementById('autoSizeQtyBtn').addEventListener('click', () => autoSizeTradeQuantity(null));
+        document.querySelectorAll('.quick-sl-btn').forEach(btn => {
+          btn.addEventListener('click', () => autoSizeTradeQuantity(parseFloat(btn.dataset.slPct)));
+        });
+        ['symbolInput','buyTimeInput','buyPriceInput','qtyInput','stopLossInput','targetPriceInput','currentPriceInput','sellPriceInput','feesInput','sideInput','riskPctSelect'].forEach(id => {
           document.getElementById(id).addEventListener('input', updateLiveModalPreview);
+          document.getElementById(id).addEventListener('change', updateLiveModalPreview);
         });
 
         document.getElementById('tradeForm').addEventListener('submit', e => {
@@ -3207,6 +3358,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             qty: document.getElementById('qtyInput').value,
             currentPrice: document.getElementById('currentPriceInput').value || document.getElementById('buyPriceInput').value,
             stopLoss: document.getElementById('stopLossInput').value,
+            initialStopLoss: prevTrade && prevTrade.initialStopLoss ? prevTrade.initialStopLoss : document.getElementById('stopLossInput').value,
             targetPrice: document.getElementById('targetPriceInput').value,
             sellTime: document.getElementById('sellTimeInput').value,
             sellPrice: document.getElementById('sellPriceInput').value,
@@ -3230,6 +3382,59 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           } else {
             showToast(`${payload.symbol} saved to your journal!`, 'success');
           }
+        });
+
+        // Partial Profit Booking Modal (Upgrade #2)
+        document.getElementById('closePartialModalBtn').addEventListener('click', () => document.getElementById('partialModal').classList.add('hidden'));
+        document.getElementById('cancelPartialModalBtn').addEventListener('click', () => document.getElementById('partialModal').classList.add('hidden'));
+        document.querySelectorAll('.partial-frac-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const raw = state.trades.find(t => t.id === document.getElementById('partialTradeIdInput').value);
+            if (!raw) return;
+            const frac = parseFloat(btn.dataset.frac) || 0.5;
+            document.getElementById('partialQtyInput').value = Math.min(raw.qty - 1, Math.max(1, Math.round(raw.qty * frac)));
+            updatePartialPreview();
+          });
+        });
+        ['partialQtyInput', 'partialPriceInput', 'partialFeesInput', 'partialMoveBeCheckbox'].forEach(id => {
+          document.getElementById(id).addEventListener('input', updatePartialPreview);
+          document.getElementById(id).addEventListener('change', updatePartialPreview);
+        });
+        document.getElementById('partialForm').addEventListener('submit', e => {
+          e.preventDefault();
+          const id = document.getElementById('partialTradeIdInput').value;
+          const tr = state.trades.find(t => t.id === id && t.status === 'open');
+          if (!tr) return;
+          const enriched = enrichTrade(tr);
+          const sellQty = Math.min(tr.qty - 1, Math.max(1, parseInt(document.getElementById('partialQtyInput').value, 10) || 1));
+          const sellPrice = parseFloat(document.getElementById('partialPriceInput').value) || enriched.exitPrice;
+          const sellTime = document.getElementById('partialTimeInput').value || toLocalInputVal();
+          const fees = Math.max(0, parseFloat(document.getElementById('partialFeesInput').value) || 0);
+          const moveBe = document.getElementById('partialMoveBeCheckbox').checked;
+
+          const closedPartial = normalizeTrade({
+            ...tr,
+            id: uid('part'),
+            status: 'closed',
+            qty: sellQty,
+            sellPrice,
+            sellTime,
+            fees,
+            notes: `[Partial Book ${sellQty}/${tr.qty} qty] ${tr.notes || ''}`.trim()
+          });
+
+          tr.qty = tr.qty - sellQty;
+          tr.currentPrice = sellPrice;
+          if (moveBe) {
+            if (!tr.initialStopLoss && tr.stopLoss) tr.initialStopLoss = tr.stopLoss;
+            tr.stopLoss = enriched.beStopPrice;
+          }
+
+          state.trades.unshift(closedPartial);
+          saveState();
+          document.getElementById('partialModal').classList.add('hidden');
+          renderAll();
+          showToast(`Booked ${sellQty} qty of ${tr.symbol} (${tr.qty} qty still running${moveBe ? `, SL → ${fmtPrice(tr.stopLoss)}` : ''}).`, 'success');
         });
 
         // OHLC Modal
@@ -3277,7 +3482,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           r.onload = () => { document.getElementById('zerodhaCsvTextarea').value = r.result; previewZerodhaCsv(); };
           r.readAsText(f);
         });
-        ['zerodhaCsvTextarea','zerodhaImportMode','zerodhaEstChargesChk','zerodhaDefaultSlPct','zerodhaDefaultSetup'].forEach(id => {
+        ['zerodhaCsvTextarea', 'zerodhaImportMode', 'zerodhaEstChargesChk', 'zerodhaDefaultSlPct', 'zerodhaDefaultSetup'].forEach(id => {
           document.getElementById(id).addEventListener('input', previewZerodhaCsv);
           document.getElementById(id).addEventListener('change', previewZerodhaCsv);
         });
@@ -3285,7 +3490,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           const today = new Date().toISOString().slice(0, 10);
           document.getElementById('zerodhaCsvTextarea').value = [
             'symbol,trade_date,trade_type,quantity,price,order_id,order_execution_time',
-            `BEL,${today},sell,160,316.40,ORD-901,${today}T14:50:00`,
+            `BEL,${today},sell,120,316.40,ORD-901,${today}T14:50:00`,
             `MAZDOCK,${today},buy,18,2480.00,ORD-902,${today}T11:45:00`
           ].join('\n');
           previewZerodhaCsv();
@@ -3322,7 +3527,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
           copyTextToClipboard(document.getElementById('aiReviewTextarea').value);
           showToast('Copied AI Review summary!', 'success');
         });
-        document.getElementById('downloadAiReviewBtn').addEventListener('click', () => downloadFile(`tradepulse-ai-review-${new Date().toISOString().slice(0,10)}.txt`, document.getElementById('aiReviewTextarea').value));
+        document.getElementById('downloadAiReviewBtn').addEventListener('click', () => downloadFile(`tradepulse-ai-review-${new Date().toISOString().slice(0, 10)}.txt`, document.getElementById('aiReviewTextarea').value));
 
         document.getElementById('closeTradeDiagBtn').addEventListener('click', () => document.getElementById('tradeDiagModal').classList.add('hidden'));
         document.getElementById('doneTradeDiagBtn').addEventListener('click', () => document.getElementById('tradeDiagModal').classList.add('hidden'));
@@ -3372,13 +3577,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
         // Export / Import / Reset
         document.getElementById('exportJsonBtn').addEventListener('click', () => {
-          downloadFile(`tradepulse-backup-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify({ settings: state.settings, trades: state.trades }, null, 2), 'application/json');
+          downloadFile(`tradepulse-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify({ settings: state.settings, trades: state.trades }, null, 2), 'application/json');
           showToast('JSON backup downloaded!', 'success');
         });
         document.getElementById('exportCsvBtn').addEventListener('click', () => {
-          const cols = ['status','symbol','side','buyTime','buyPrice','sellTime','sellPrice','currentPrice','qty','stopLoss','targetPrice','fees','setup','planFollowed','emotion','notes'];
+          const cols = ['status', 'symbol', 'side', 'buyTime', 'buyPrice', 'sellTime', 'sellPrice', 'currentPrice', 'qty', 'stopLoss', 'initialStopLoss', 'targetPrice', 'fees', 'setup', 'planFollowed', 'emotion', 'notes'];
           const rows = [cols.join(','), ...state.trades.map(t => cols.map(c => `"${String(t[c] ?? '').replace(/"/g, '""')}"`).join(','))];
-          downloadFile(`tradepulse-trades-${new Date().toISOString().slice(0,10)}.csv`, rows.join('\n'), 'text/csv');
+          downloadFile(`tradepulse-trades-${new Date().toISOString().slice(0, 10)}.csv`, rows.join('\n'), 'text/csv');
           showToast('CSV exported!', 'success');
         });
         document.getElementById('importFileInput').addEventListener('change', e => {
